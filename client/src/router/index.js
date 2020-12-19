@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Camera from '../components/Camera.vue'
+import Photo from '../components/Photo.vue'
 import Home from '../components/Home.vue'
 
 Vue.use(VueRouter)
@@ -12,9 +12,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/camera/:containerId',
-    name: 'camera',
-    component: Camera,
+    path: '/photo/:containerId',
+    name: 'photo',
+    component: Photo,
     props: true
   }
 ]
