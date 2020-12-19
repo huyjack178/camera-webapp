@@ -24,9 +24,11 @@
         <input
           v-show="false"
           type="file"
+          ref="camera"
           id="camera"
           accept="image/*"
           capture="camera"
+          v-on:change="onChange"
         />
       </v-col>
     </v-row>
@@ -45,10 +47,15 @@ export default {
       if (!this.containerId) {
         alert('Please input container ID');
       } else {
-        var camera = document.getElementById('camera');
-        camera.click();
+        // var camera = document.getElementById('camera');
+        this.$refs.camera.click();
       }
     },
+
+    onChange() {
+      var file = this.$refs.camera.files[0];
+      console.log(file);
+    }
   },
 };
 </script>
