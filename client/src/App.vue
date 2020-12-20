@@ -34,17 +34,19 @@
     </v-app-bar> -->
 
     <v-main>
-      <transition name="fade">
-        <router-view class="view"></router-view>
-      </transition>
+      <transition name="fade"><Home /> </transition>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import Home from "./components/Home";
+
 export default {
   name: "App",
-
+  components: {
+    Home,
+  },
   data: () => ({
     //
   }),

@@ -11,9 +11,8 @@
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "form-data": "^3.0.0",
+    "moment": "^2.29.1",
     "vue": "^2.6.11",
-    "vue-router": "^3.4.9",
-    "vue-web-cam": "^1.9.0",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {

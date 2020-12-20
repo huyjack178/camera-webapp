@@ -1,18 +1,11 @@
 const fastify = require("fastify");
 const path = require("path");
+const server = fastify();
 const multer = require("fastify-multer");
-const configs = require("./configs");
-const cloudinary = require("cloudinary").v2;
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const server = fastify();
-
-cloudinary.config({
-  cloud_name: configs.cloudinary.cloud_name,
-  api_key: configs.cloudinary.api_key,
-  api_secret: configs.cloudinary.api_secret,
-});
+const mime = require("mime-types");
+const { uploadToCloud, uploadToFTP } = require("./upload");
 
 server.register(multer.contentParser);
 
@@ -28,37 +21,41 @@ server.get("/", function (req, res) {
   res.sendFile("index.html");
 });
 
-const uploadFiles = async (req, res) => {
-  req.files.forEach((file) => {
+server.post(
+  "/upload",
+  { preHandler: upload.single("file") },
+  async (req, res) => {
+    const file = req.file;
     console.log(file);
-    uploadToCloud(file.buffer);
-  });
-};
+    const fileName = file.originalname + "." + mime.extension(file.mimetype);
+    uploadToFTP(file.buffer, fileName, (err) => {
+      let responseCloud;
+      let responseFtp;
 
-const uploadToCloud = async (fileContent) => {
-  try {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        discard_original_filename: false,
-        use_filename: true,
-        transformation: { quality: "auto:low" },
-      },
-      (err, res) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(`Upload succeed: ${res.url}`);
-        }
+      if (err) {
+        responseFtp = { error: err, success: false };
+      } else {
+        responseFtp = { success: true };
       }
-    );
 
-    stream.end(fileContent);
-  } catch (error) {
-    console.log(error);
+      uploadToCloud(file.buffer, fileName, (err, uploadResponse) => {
+        if (err) {
+          responseCloud = { error: err, success: false };
+        } else {
+          responseCloud = {
+            success: true,
+            url: uploadResponse.url,
+          };
+        }
+
+        res.code(200).send({
+          ftp: responseFtp,
+          cloud: responseCloud,
+        });
+      });
+    });
   }
-};
-
-server.post("/upload", { preHandler: upload.array("file") }, uploadFiles);
+);
 
 server.listen(3000, (err, address) => {
   if (err) {
