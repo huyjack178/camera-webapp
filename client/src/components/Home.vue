@@ -1,5 +1,119 @@
 <template>
   <v-container>
+    <v-row class="text-center" v-show="!showPhotos && !showCamera">
+      <v-col cols="12">
+        <v-text-field
+          label="Container No."
+          v:rules="rules"
+          hide-details="auto"
+          v-model="containerId"
+          style="text-transform:uppercase"
+          oninput="this.value = this.value.toUpperCase()"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12">
+        <v-btn
+          for="files"
+          elevation="5"
+          outlined
+          rounded
+          color="primary"
+          v-on:click="openCamera"
+        >
+          <v-icon dark left>fas fa-camera</v-icon>
+          Chụp
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row v-show="showCamera">
+      <v-col cols="12" class="text-center"
+        >CONTAINER NO: <strong>{{ containerId }}</strong></v-col
+      >
+      <v-col cols="12">
+        <video v-show="true" playsinline autoplay />
+      </v-col>
+      <v-col cols="4">
+        <v-btn
+          for="files"
+          elevation="5"
+          outlined
+          rounded
+          color="primary"
+          :disabled="photoFiles.length > 0 ? false : true"
+          v-on:click="viewPhotos"
+        >
+          <v-icon dark left>fas fa-file-image</v-icon>
+          Xem
+        </v-btn>
+      </v-col>
+      <v-col cols="8">
+        <v-btn
+          for="files"
+          elevation="5"
+          outlined
+          rounded
+          color="primary"
+          v-on:click="snapshot"
+        >
+          <v-icon dark left>fas fa-camera</v-icon>
+          Chụp
+        </v-btn></v-col
+      >
+    </v-row>
+    <v-row v-show="showPhotos" class="text-center">
+      <v-col cols="12">
+        <v-carousel ref="carousel" v-model="carouselId">
+          <v-carousel-item
+            v-for="(item, i) in photos"
+            :key="i"
+            :src="item.src"
+          ></v-carousel-item>
+        </v-carousel>
+      </v-col>
+    </v-row>
+    <v-row v-show="showPhotos" class="text-center">
+      <v-col cols="4">
+        <v-btn
+          for="files"
+          elevation="5"
+          outlined
+          rounded
+          color="primary"
+          v-on:click="openCamera"
+        >
+          <v-icon dark left>fas fa-camera</v-icon>
+          Chụp
+        </v-btn>
+      </v-col>
+      <v-col cols="4">
+        <v-btn
+          for="files"
+          elevation="5"
+          outlined
+          rounded
+          color="primary"
+          :disabled="photoFiles.length > 0 ? false : true"
+          v-on:click="upload"
+        >
+          <v-icon dark left>fas fa-save</v-icon>
+          Ghi
+        </v-btn></v-col
+      >
+      <v-col cols="4">
+        <v-btn
+          for="files"
+          elevation="5"
+          outlined
+          rounded
+          color="primary"
+          v-on:click="deletePhoto"
+        >
+          <v-icon dark left>fas fa-trash-alt</v-icon>
+          Xóa
+        </v-btn></v-col
+      >
+    </v-row>
+    <v-overlay :value="snapshotAlert" opacity="0.7" color="#fff"> </v-overlay>
     <v-dialog
       v-model="showProgressDialog"
       persistent
@@ -73,139 +187,91 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-row class="text-center" v-show="!viewPhotos">
-      <v-col cols="12">
-        <v-text-field
-          label="Container ID"
-          v:rules="rules"
-          hide-details="auto"
-          v-model="containerId"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          v-on:click="showCamera"
-        >
-          <v-icon dark left>fas fa-camera</v-icon>
-          Chụp
-        </v-btn>
-        <input
-          v-show="false"
-          type="file"
-          ref="camera"
-          multiple="multiple"
-          id="camera"
-          accept="image/*"
-          capture="camera"
-          v-on:change="onCapture"
-        />
-      </v-col>
-    </v-row>
-    <v-row v-show="viewPhotos" class="text-center">
-      <v-col cols="12">
-        <v-carousel ref="carousel" v-model="carouselId">
-          <v-carousel-item
-            v-for="(item, i) in photos"
-            :key="i"
-            :src="item.src"
-          ></v-carousel-item>
-        </v-carousel>
-      </v-col>
-    </v-row>
-    <v-row v-show="viewPhotos" class="text-center">
-      <v-col cols="4">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          v-on:click="showCamera"
-        >
-          <v-icon dark left>fas fa-camera</v-icon>
-          Chụp
-        </v-btn>
-      </v-col>
-      <v-col cols="4">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          :disabled="photoFiles.length > 0 ? false : true"
-          v-on:click="upload"
-        >
-          <v-icon dark left>fas fa-camera</v-icon>
-          Ghi
-        </v-btn></v-col
-      >
-      <v-col cols="4">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          v-on:click="deletePhoto"
-        >
-          <v-icon dark left>fas fa-camera</v-icon>
-          Xóa
-        </v-btn></v-col
-      >
-    </v-row>
   </v-container>
 </template>
 <script>
-import axios from "axios";
-import FormData from "form-data";
-import moment from "moment";
-import configs from "../configs";
+import axios from 'axios';
+import FormData from 'form-data';
+import moment from 'moment';
+import configs from '../configs';
 
 export default {
   mounted() {
+    this.getDevices()
+      .then((res) => {
+        console.log('get devices:', res);
+      })
+      .then(() => {
+        this.getMedia().then((res) => {
+          console.log('get media', res);
+        });
+      });
+
     setInterval(() => {
       this.$forceUpdate();
     }, 4000);
   },
-  name: "Home",
+  name: 'Home',
   data() {
     return {
-      containerId: "",
-      viewPhotos: false,
+      containerId: '',
+      containerFileName: '',
       photoFiles: [],
       photos: [],
       carouselId: 0,
+      showCamera: false,
+      showPhotos: false,
       showProgressDialog: false,
+      snapshotAlert: false,
     };
   },
   methods: {
-    showCamera() {
+    openCamera() {
       if (!this.containerId) {
-        alert("Please input container ID");
+        alert('Please input Container No');
       } else {
-        this.$refs.camera.click();
+        this.showPhotos = false;
+        this.showCamera = true;
       }
     },
 
-    onCapture() {
-      this.viewPhotos = true;
-      var file = this.$refs.camera.files[0];
+    async snapshot() {
+      const video = document.querySelector('video');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas
+        .getContext('2d')
+        .drawImage(video, 0, 0, canvas.width, canvas.height);
+      const file = await new Promise((resolve) =>
+        canvas.toBlob(resolve, 'image/png')
+      );
+
+      if (this.containerFileName == '') {
+        this.containerFileName = `${this.containerId}_${moment().format(
+          'YYMMDDhhmmss'
+        )}`.toUpperCase();
+      }
+
       this.photoFiles.push({
         file,
-        name: `${this.containerId}_${moment().format("YYMMDDhhmmss")}_${this
-          .photoFiles.length + 1}`,
+        name: `${this.containerFileName}_${this.photoFiles.length + 1}`,
         uploading: true,
         uploadCloudSuccess: false,
       });
 
       this.photos.push(this.readPhotoFile(file));
       this.carouselId = this.photoFiles.length - 1;
+      this.snapshotAlert = true;
+
+      setTimeout(() => {
+        this.snapshotAlert = false;
+      }, 300);
+    },
+
+    viewPhotos() {
+      this.showPhotos = true;
+      this.showCamera = false;
     },
 
     upload() {
@@ -213,38 +279,38 @@ export default {
 
       this.photoFiles.forEach(({ file, name }) => {
         let data = new FormData();
-        data.append("file", file, name);
+        data.append('file', file, name);
         axios
-          .post(configs.serverUrl + "/upload", data, {
+          .post(configs.serverUrl + '/upload', data, {
             headers: {
-              accept: "application/json",
-              "Accept-Language": "en-US,en;q=0.8",
-              "Content-Type": `multipart/form-data`,
+              accept: 'application/json',
+              'Accept-Language': 'en-US,en;q=0.8',
+              'Content-Type': `multipart/form-data`,
             },
           })
           .then((response) => {
-            let file = this.photoFiles.find((file) => file.name == name);
-            file.uploading = false;
+            let uploadFile = this.photoFiles.find((f) => f.name == name);
+            uploadFile.uploading = false;
             const responseData = response.data;
 
             if (responseData.cloud.success) {
-              file.cloudUrl = responseData.cloud.url;
-              file.uploadCloudSuccess = true;
+              uploadFile.cloudUrl = responseData.cloud.url;
+              uploadFile.uploadCloudSuccess = true;
             } else {
-              file.uploadCloudSuccess = false;
+              uploadFile.uploadCloudSuccess = false;
             }
 
             if (responseData.ftp.success) {
-              file.uploadFtpSuccess = true;
+              uploadFile.uploadFtpSuccess = true;
             } else {
-              file.uploadFtpSuccess = false;
+              uploadFile.uploadFtpSuccess = false;
             }
           });
       });
     },
 
     readPhotoFile(photoFile) {
-      var img = document.createElement("img");
+      var img = document.createElement('img');
       var reader = new FileReader();
       reader.onloadend = function() {
         img.src = reader.result;
@@ -263,12 +329,42 @@ export default {
     },
 
     backToHomePage() {
-      this.containerId = "";
+      this.containerId = '';
+      this.containerFileName = '';
       this.showProgressDialog = false;
-      this.viewPhotos = false;
+      this.showPhotos = false;
       this.photoFiles = [];
       this.photos = [];
+    },
+
+    async getMedia() {
+      const video = document.querySelector('video');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
+        audio: false,
+      });
+
+      window.stream = stream;
+      video.srcObject = window.stream;
+      return true;
+    },
+
+    async getDevices() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        return false;
+      }
+
+      let allDevices = await navigator.mediaDevices.enumerateDevices();
+      console.log(allDevices);
+
+      return true;
     },
   },
 };
 </script>
+
+<style scoped>
+video {
+    width: 100%;
+}
+</style>
