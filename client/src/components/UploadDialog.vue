@@ -1,6 +1,6 @@
 <template>
-  <v-layout row justify-center>
-    <v-dialog v-model="showDialog" persistent width="500" class="text-center">
+  <v-container>
+    <v-dialog persistent width="500" class="text-center">
       <v-card>
         <v-card-title class="headline">
           Upload ảnh đến cloudinary và ftp server ...
@@ -68,24 +68,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-container>
 </template>
 
 <script>
 export default {
-  mounted() {
-    console.log("mouted");
-  },
-  props: ["showDialog", "photoFiles"],
-
-  methods: {
-    backToHomePage() {
-      this.containerId = "";
-      this.showProgressDialog = false;
-      this.viewPhotos = false;
-      this.photoFiles = [];
-      this.photos = [];
-    },
+  props: {
+    photoFiles: [],
   },
 };
 </script>
