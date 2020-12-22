@@ -26,9 +26,6 @@
       </v-col>
     </v-row>
     <v-row v-show="showCamera">
-      <v-col cols="12" class="text-center"
-        >CONTAINER NO: <strong>{{ containerId }}</strong></v-col
-      >
       <v-col cols="12">
         <video v-show="true" playsinline autoplay />
       </v-col>
@@ -61,9 +58,9 @@
       >
     </v-row>
     <v-row v-show="showPhotos" class="text-center">
-      <v-col cols="12" class="text-center"
+      <!-- <v-col cols="12" class="text-center"
         >CONTAINER NO: <strong>{{ containerId }}</strong></v-col
-      >
+      > -->
       <v-col cols="12">
         <v-carousel ref="carousel" v-model="carouselId">
           <v-carousel-item
@@ -343,7 +340,11 @@ export default {
     async getMedia() {
       const video = document.querySelector('video');
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
+        video: {
+          facingMode: 'environment',
+          width: { min: 1920 },
+          height: { min: 1080 },
+        },
         audio: false,
       });
 
