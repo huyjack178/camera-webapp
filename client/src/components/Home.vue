@@ -61,6 +61,9 @@
       >
     </v-row>
     <v-row v-show="showPhotos" class="text-center">
+      <v-col cols="12" class="text-center"
+        >CONTAINER NO: <strong>{{ containerId }}</strong></v-col
+      >
       <v-col cols="12">
         <v-carousel ref="carousel" v-model="carouselId">
           <v-carousel-item
@@ -228,7 +231,7 @@ export default {
   methods: {
     openCamera() {
       if (!this.containerId) {
-        alert('Please input Container No');
+        alert('Vui lòng nhập Container No');
       } else {
         this.showPhotos = false;
         this.showCamera = true;
