@@ -1,7 +1,28 @@
 const configs = require("./configs");
 const cloudinary = require("cloudinary").v2;
-const Ftp = require("ftp");
 cloudinary.config(configs.cloudinary);
+const mime = require("mime-types");
+
+const uploadCloud = async(req, res) => {
+  const file = req.file;
+    const fileName = file.originalname + "." + mime.extension(file.mimetype);
+    
+    uploadToCloud(file.buffer, fileName, (err, uploadResponse) => {
+      let response;
+      if (err) {
+        response = { error: err, success: false };
+      } else {
+        response = {
+          success: true,
+          url: uploadResponse.url,
+        };
+      }
+
+      res.code(200).send({
+        cloud: response,
+      });
+    });
+  }
 
 const uploadToCloud = async (fileContent, fileName, callback) => {
   try {
@@ -27,24 +48,4 @@ const uploadToCloud = async (fileContent, fileName, callback) => {
   }
 };
 
-const uploadToFTP = async (fileContent, fileName, callback) => {
-  const ftpClient = new Ftp();
-  ftpClient.connect(configs.ftp);
-
-  ftpClient.on("ready", function () {
-    ftpClient.put(fileContent, fileName, function (err, list) {
-      if (err) {
-        console.log(err);
-      }
-
-      console.log("Upload FTP success");
-      ftpClient.end();
-      callback(err);
-    });
-  });
-};
-
-module.exports = {
-  uploadToCloud,
-  uploadToFTP,
-};
+module.exports = uploadCloud;

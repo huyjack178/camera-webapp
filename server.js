@@ -4,8 +4,9 @@ const server = fastify();
 const multer = require("fastify-multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const mime = require("mime-types");
-const { uploadToCloud, uploadToFTP } = require("./upload");
+const uploadFTP = require("./uploadFTP");
+const uploadCloud = require("./uploadCloud");
+const uploadLocal = require("./uploadLocal");
 
 server.register(multer.contentParser);
 
@@ -21,41 +22,9 @@ server.get("/", function (req, res) {
   res.sendFile("index.html");
 });
 
-server.post(
-  "/upload",
-  { preHandler: upload.single("file") },
-  async (req, res) => {
-    const file = req.file;
-    console.log(file);
-    const fileName = file.originalname + "." + mime.extension(file.mimetype);
-    uploadToFTP(file.buffer, fileName, (err) => {
-      let responseCloud;
-      let responseFtp;
-
-      if (err) {
-        responseFtp = { error: err, success: false };
-      } else {
-        responseFtp = { success: true };
-      }
-
-      uploadToCloud(file.buffer, fileName, (err, uploadResponse) => {
-        if (err) {
-          responseCloud = { error: err, success: false };
-        } else {
-          responseCloud = {
-            success: true,
-            url: uploadResponse.url,
-          };
-        }
-
-        res.code(200).send({
-          ftp: responseFtp,
-          cloud: responseCloud,
-        });
-      });
-    });
-  }
-);
+server.post('uploadCloud',  { preHandler: upload.single("file") },  uploadCloud);
+server.post('uploadFTP',  { preHandler: upload.single("file") },  uploadFTP);
+server.post('uploadLocal',  { preHandler: upload.single("file") },  uploadLocal);
 
 server.listen(3000, (err, address) => {
   if (err) {

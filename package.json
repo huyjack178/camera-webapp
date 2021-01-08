@@ -10,7 +10,8 @@
     "fastify-multer": "^2.0.2",
     "fastify-static": "^3.3.0",
     "ftp": "^0.3.10",
-    "mime-types": "^2.1.27"
+    "mime-types": "^2.1.27",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "@types/node": "^14.14.14",
