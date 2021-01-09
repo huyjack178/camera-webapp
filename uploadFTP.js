@@ -14,28 +14,32 @@ const uploadFTP = async (req, res) => {
     } else {
       response = { success: true };
     }
-    
+
     res.code(200).send({
       ftp: response,
     });
   });
-}
+};
 
 const uploadToFTP = async (fileContent, fileName, callback) => {
   const ftpClient = new Ftp();
-  ftpClient.connect(configs.ftp);
+  try {
+    ftpClient.connect(configs.ftp);
 
-  ftpClient.on("ready", function () {
-    ftpClient.put(fileContent, fileName, function (err, list) {
-      if (err) {
-        console.log(err);
-      }
+    ftpClient.on("ready", function () {
+      ftpClient.put(fileContent, fileName, function (err, list) {
+        if (err) {
+          console.log(err);
+        }
 
-      console.log("Upload FTP success");
-      ftpClient.end();
-      callback(err);
+        console.log("Upload FTP success");
+        ftpClient.end();
+        callback(err);
+      });
     });
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = uploadFTP;

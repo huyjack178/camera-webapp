@@ -1,4 +1,5 @@
 module.exports = {
+  uploadDirectoryPath: "./upload-files",
   cloudinary: {
     cloud_name: "harrison178",
     api_key: "249396988716972",
@@ -6,7 +7,7 @@ module.exports = {
   },
   ftp: {
     host: "ftp.dlptest.com",
-    user: "dlpuser@dlptest.com",
-    password: "eUj8GeW55SvYaswqUyDSm5v6N",
+    user: "dlpuser",
+    password: "rNrKYTX9g7z3RgJRmxWuGHbeu",
   },
 };

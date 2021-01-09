@@ -22,9 +22,9 @@ server.get("/", function (req, res) {
   res.sendFile("index.html");
 });
 
-server.post('uploadCloud',  { preHandler: upload.single("file") },  uploadCloud);
-server.post('uploadFTP',  { preHandler: upload.single("file") },  uploadFTP);
-server.post('uploadLocal',  { preHandler: upload.single("file") },  uploadLocal);
+server.post("/uploadCloud", { preHandler: upload.single("file") }, uploadCloud);
+server.post("/uploadFTP", { preHandler: upload.single("file") }, uploadFTP);
+server.post("/uploadLocal", { preHandler: upload.single("file") }, uploadLocal);
 
 server.listen(3000, (err, address) => {
   if (err) {
