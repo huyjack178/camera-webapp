@@ -1,18 +1,20 @@
-const configs = require("./configs");
-const Ftp = require("ftp");
-const mime = require("mime-types");
+const configs = require('./configs');
+const Ftp = require('ftp');
+const mime = require('mime-types');
 
 const uploadFTP = async (req, res) => {
+  console.log('Uploading FTP ... ');
   const file = req.file;
-  console.log(file);
-  const fileName = file.originalname + "." + mime.extension(file.mimetype);
-  uploadToFTP(file.buffer, fileName, (err) => {
+  const fileName = file.originalname + '.' + mime.extension(file.mimetype);
+  const ftpSetting = JSON.parse(req.body.ftpSetting);
+
+  uploadToFTP(file.buffer, fileName, ftpSetting, (err) => {
     let response;
 
     if (err) {
       response = { error: err, success: false };
     } else {
-      response = { success: true };
+      response = { success: true, host: ftpSetting.host ? ftpSetting.host : configs.ftp.host };
     }
 
     res.code(200).send({
@@ -21,18 +23,18 @@ const uploadFTP = async (req, res) => {
   });
 };
 
-const uploadToFTP = async (fileContent, fileName, callback) => {
+const uploadToFTP = async (fileContent, fileName, ftpSetting, callback) => {
   const ftpClient = new Ftp();
   try {
-    ftpClient.connect(configs.ftp);
+    ftpClient.connect(ftpSetting.host ? ftpSetting : configs.ftp);
 
-    ftpClient.on("ready", function () {
+    ftpClient.on('ready', function () {
       ftpClient.put(fileContent, fileName, function (err, list) {
         if (err) {
           console.log(err);
         }
 
-        console.log("Upload FTP success");
+        console.log('Upload FTP success');
         ftpClient.end();
         callback(err);
       });

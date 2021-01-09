@@ -1,50 +1,46 @@
-import moment from "moment";
-import UploadService from "../../services/upload-service";
+import moment from 'moment';
+import UploadService from '../../services/upload-service';
 const uploadService = new UploadService();
 
 export default {
   mounted() {
-    if (!this.$cookies.isKey("user")) {
-      this.$router.push("/login");
+    if (!this.$cookies.isKey('user')) {
+      this.$router.push('/login');
     }
 
-    if (localStorage.getItem("uploadSettings")) {
-      this.uploadSettings = JSON.parse(localStorage.getItem("uploadSettings"));
+    if (localStorage.getItem('uploadSettings')) {
+      this.uploadSettings = JSON.parse(localStorage.getItem('uploadSettings'));
     }
 
     setInterval(() => {
       this.$forceUpdate();
     }, 1000);
   },
-  name: "Home",
+  name: 'Home',
   data() {
     return {
       uploadSettings: {
         local: {
           enabled: true,
-          ip: "",
+          ip: '',
         },
         ftp: {
           enabled: false,
-          host: "",
-          username: "",
-          password: "",
+          host: '',
+          username: '',
+          password: '',
         },
         cloudinary: {
           enabled: false,
-          cloudName: "",
-          apiKey: "",
-          apiSecret: "",
+          cloud_name: '',
+          api_key: '',
+          api_secret: '',
         },
       },
-      uploadSettingsTab: null,
-      uploadLocal: null,
-      uploadFTP: null,
-      uploadCloud: null,
-      containerId: "",
+      containerId: '',
       rules: {
-        required: (value) => !!value || "Required.",
-        min: (v) => v.length >= 1 || "Min 1 characters",
+        required: value => !!value || 'Required.',
+        min: v => v.length >= 1 || 'Min 1 characters',
       },
       viewPhotos: false,
       photoFiles: [],
@@ -67,10 +63,7 @@ export default {
       this.photoFiles.push({
         file,
         date: moment(),
-        name: `${this.containerId}_${moment().format("YYMMDDhhmmss")}_${this
-          .photoFiles.length + 1}`,
-        uploading: true,
-        uploadCloudSuccess: false,
+        name: `${this.containerId}_${moment().format('YYMMDDhhmmss')}_${this.photoFiles.length + 1}`,
       });
       this.photos.push(this.readPhotoFile(file));
       this.carouselId = this.photoFiles.length - 1;
@@ -78,35 +71,52 @@ export default {
 
     upload() {
       this.showProgressDialog = true;
-      this.photoFiles.forEach(({ file, name, date }) => {
+      this.photoFiles.forEach(photoFile => {
+        const fileContent = photoFile.file;
+        const fileName = photoFile.name;
+        const fileDate = photoFile.date;
+
         if (this.uploadSettings.local.enabled) {
-          uploadService.uploadLocalServer(file, name, date, (response) => {
-            file.uploading = false;
-            console.log(response.data);
+          photoFile.uploadingLocal = true;
+          uploadService.uploadLocalServer(fileContent, fileName, fileDate, this.uploadSettings.local.ip, response => {
+            const result = response.data;
+            photoFile.uploadingLocal = false;
+
+            if (result.local.success) {
+              photoFile.localPath = result.local.path;
+              photoFile.uploadLocalSuccess = true;
+            } else {
+              photoFile.uploadLocalSuccess = false;
+            }
           });
         }
 
         if (this.uploadSettings.ftp.enabled) {
-          uploadService.uploadFTP(file, name, (response) => {
+          photoFile.uploadingFtp = true;
+          uploadService.uploadFTP(fileContent, fileName, this.uploadSettings.ftp, response => {
             const result = response.data;
-            file.uploading = false;
+            photoFile.uploadingFtp = false;
+
             if (result.ftp.success) {
-              file.uploadFtpSuccess = true;
+              photoFile.ftpHost = result.ftp.host;
+              photoFile.uploadFtpSuccess = true;
             } else {
-              file.uploadFtpSuccess = false;
+              photoFile.uploadFtpSuccess = false;
             }
           });
         }
 
         if (this.uploadSettings.cloudinary.enabled) {
-          uploadService.uploadCloud(file, name, (response) => {
+          photoFile.uploadingCloud = true;
+          uploadService.uploadCloud(fileContent, fileName, this.uploadSettings.cloudinary, response => {
             const result = response.data;
-            file.uploading = false;
+            photoFile.uploadingCloud = false;
+
             if (result.cloud.success) {
-              file.cloudUrl = result.cloud.url;
-              file.uploadCloudSuccess = true;
+              photoFile.cloudUrl = result.cloud.url;
+              photoFile.uploadCloudSuccess = true;
             } else {
-              file.uploadCloudSuccess = false;
+              photoFile.uploadCloudSuccess = false;
             }
           });
         }
@@ -114,7 +124,7 @@ export default {
     },
 
     readPhotoFile(photoFile) {
-      var img = document.createElement("img");
+      var img = document.createElement('img');
       var reader = new FileReader();
       reader.onloadend = function() {
         img.src = reader.result;
@@ -133,7 +143,7 @@ export default {
     },
 
     backToHomePage() {
-      this.containerId = "";
+      this.containerId = '';
       this.showProgressDialog = false;
       this.viewPhotos = false;
       this.photoFiles = [];
@@ -142,10 +152,7 @@ export default {
 
     closeUploadSettingsDialog() {
       this.showUploadSettingsDialog = false;
-      localStorage.setItem(
-        "uploadSettings",
-        JSON.stringify(this.uploadSettings)
-      );
+      localStorage.setItem('uploadSettings', JSON.stringify(this.uploadSettings));
     },
   },
 };

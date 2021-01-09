@@ -3,6 +3,7 @@
 ## Project setup
 
 ```
+npm install -g --unsafe-perm=true --allow-root
 npm install
 cd ./client && npm install
 ```

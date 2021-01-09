@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    fluid
-    fill-height
-    class="text-center justify-center align-center"
-  >
+  <v-container fluid fill-height class="text-center justify-center align-center">
     <v-app-bar app color="primary" dark>
       <v-spacer></v-spacer>
       <v-btn text v-on:click="showUploadSettingsDialog = true">
@@ -11,69 +7,87 @@
         <v-icon>mdi-wrench</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-dialog
-      v-model="showProgressDialog"
-      persistent
-      width="500"
-      class="text-center"
-      id="upload-dialog"
-    >
+    <v-dialog v-model="showProgressDialog" persistent width="500" class="text-center" id="upload-dialog">
       <v-card>
         <v-card-title class="headline">
-          Upload ảnh đến cloudinary và ftp server ...
+          Đang Upload ...
         </v-card-title>
         <v-card-text>
-          <li
-            v-for="item in photoFiles"
-            :key="item.name"
-            class="mt-3"
-            style="list-style: none"
-          >
+          <li v-for="item in photoFiles" :key="item.name" class="mt-3" style="list-style: none">
             <div>
               <strong> {{ item.name }}&nbsp;</strong>
             </div>
-            <v-progress-circular
-              v-show="item.uploading"
-              :width="3"
-              :size="20"
-              color="primary"
-              indeterminate
-            ></v-progress-circular>
-            <div>
-              <span v-show="!item.uploading && item.uploadCloudSuccess"
-                >Cloud
+            <div v-show="uploadSettings.local.enabled">
+              Local Server
+              <v-progress-circular
+                v-show="item.uploadingLocal"
+                :width="3"
+                :size="20"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+              <span v-show="!item.uploadingLocal && item.uploadLocalSuccess">
                 <v-icon small color="green darken-2">
                   fas fa-check-circle
                 </v-icon></span
               >
 
-              <span v-show="!item.uploading && !item.uploadCloudSuccess"
-                >Cloud
+              <span v-show="!item.uploadingLocal && !item.uploadLocalSuccess">
                 <v-icon small color="red darken-2">
                   fas fa-check-times
                 </v-icon></span
               >
-              <a
-                v-show="!item.uploading && item.uploadCloudSuccess"
-                target="_blank"
-                v-bind:href="item.cloudUrl"
-                >{{ item.cloudUrl }}</a
-              >
+              <div>
+                <strong>{{ item.localPath }}</strong>
+              </div>
             </div>
-            <div>
-              <span v-show="!item.uploading && item.uploadFtpSuccess"
-                >FTP
+            <div v-show="uploadSettings.cloudinary.enabled">
+              Cloud
+              <span v-show="!item.uploadingCloud && item.uploadCloudSuccess">
                 <v-icon small color="green darken-2">
                   fas fa-check-circle
                 </v-icon></span
               >
 
-              <span v-show="!item.uploading && !item.uploadFtpSuccess"
-                >FTP
+              <span v-show="!item.uploadingCloud && !item.uploadCloudSuccess">
                 <v-icon small color="red darken-2">
                   fas fa-check-times
                 </v-icon></span
               >
+              <a v-show="!item.uploadingCloud && item.uploadCloudSuccess" target="_blank" v-bind:href="item.cloudUrl">{{
+                item.cloudUrl
+              }}</a>
+              <v-progress-circular
+                v-show="item.uploadingCloud"
+                :width="3"
+                :size="20"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+            </div>
+            <div v-show="uploadSettings.ftp.enabled">
+              FTP
+              <v-progress-circular
+                v-show="item.uploadingFtp"
+                :width="3"
+                :size="20"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+              <span v-show="!item.uploadingFtp && item.uploadFtpSuccess">
+                <v-icon small color="green darken-2">
+                  fas fa-check-circle
+                </v-icon></span
+              >
+
+              <span v-show="!item.uploadingFtp && !item.uploadFtpSuccess">
+                <v-icon small color="red darken-2">
+                  fas fa-check-times
+                </v-icon></span
+              >
+              <div>
+                <strong>{{ item.ftpHost }}</strong>
+              </div>
             </div>
           </li>
         </v-card-text>
@@ -85,13 +99,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog
-      v-model="showUploadSettingsDialog"
-      persistent
-      width="500"
-      class="text-center"
-      id="upload-settings-dialog"
-    >
+    <v-dialog v-model="showUploadSettingsDialog" persistent width="500" class="text-center" id="upload-settings-dialog">
       <v-card>
         <v-card-title class="headline"> Cấu hình Upload </v-card-title>
         <v-expansion-panels>
@@ -173,7 +181,7 @@
                   <v-text-field
                     label="Cloud Name"
                     outlined
-                    v-model="uploadSettings.cloudinary.cloudName"
+                    v-model="uploadSettings.cloudinary.cloud_name"
                     :disabled="!uploadSettings.cloudinary.enabled"
                   ></v-text-field>
                 </v-col>
@@ -181,7 +189,7 @@
                   <v-text-field
                     label="API KEY"
                     outlined
-                    v-model="uploadSettings.cloudinary.apiKey"
+                    v-model="uploadSettings.cloudinary.api_key"
                     :disabled="!uploadSettings.cloudinary.enabled"
                     class="mr-2"
                   ></v-text-field>
@@ -191,7 +199,7 @@
                     label="API SECRET"
                     outlined
                     type="password"
-                    v-model="uploadSettings.cloudinary.apiSecret"
+                    v-model="uploadSettings.cloudinary.api_secret"
                     :disabled="!uploadSettings.cloudinary.enabled"
                   ></v-text-field>
                 </v-col>
@@ -221,14 +229,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          v-on:click="showCamera"
-        >
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
           <v-icon dark left>fas fa-camera</v-icon>
           Chụp
         </v-btn>
@@ -247,24 +248,13 @@
     <v-row v-show="viewPhotos" id="photo-viewer">
       <v-col cols="12">
         <v-carousel ref="carousel" v-model="carouselId">
-          <v-carousel-item
-            v-for="(item, i) in photos"
-            :key="i"
-            :src="item.src"
-          ></v-carousel-item>
+          <v-carousel-item v-for="(item, i) in photos" :key="i" :src="item.src"></v-carousel-item>
         </v-carousel>
       </v-col>
     </v-row>
     <v-row v-show="viewPhotos" id="buttons">
       <v-col cols="4">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          v-on:click="showCamera"
-        >
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
           <v-icon dark left>fas fa-camera</v-icon>
           Chụp
         </v-btn>
@@ -284,14 +274,7 @@
         </v-btn></v-col
       >
       <v-col cols="4">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          v-on:click="deletePhoto"
-        >
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deletePhoto">
           <v-icon dark left>fas fa-camera</v-icon>
           Xóa
         </v-btn></v-col
