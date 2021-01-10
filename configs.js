@@ -1,4 +1,9 @@
 module.exports = {
+  jwtSecret: 'thisissecretjwt',
+  adminUser: {
+    userName: 'admin',
+    password: '1234aaAA',
+  },
   uploadDirectoryPath: './upload-files',
   cloudinary: {
     cloud_name: 'harrison178',

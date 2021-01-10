@@ -9,9 +9,7 @@
     </v-app-bar>
     <v-dialog v-model="showProgressDialog" persistent width="500" class="text-center" id="upload-dialog">
       <v-card>
-        <v-card-title class="headline">
-          Đang Upload ...
-        </v-card-title>
+        <v-card-title class="headline"> Đang Upload ... </v-card-title>
         <v-card-text>
           <li v-for="item in photoFiles" :key="item.name" class="mt-3" style="list-style: none">
             <div>
@@ -27,15 +25,11 @@
                 indeterminate
               ></v-progress-circular>
               <span v-show="!item.uploadingLocal && item.uploadLocalSuccess">
-                <v-icon small color="green darken-2">
-                  fas fa-check-circle
-                </v-icon></span
+                <v-icon small color="green darken-2"> fas fa-check-circle </v-icon></span
               >
 
               <span v-show="!item.uploadingLocal && !item.uploadLocalSuccess">
-                <v-icon small color="red darken-2">
-                  fas fa-check-times
-                </v-icon></span
+                <v-icon small color="red darken-2"> fas fa-check-times </v-icon></span
               >
               <div>
                 <strong>{{ item.localPath }}</strong>
@@ -44,15 +38,11 @@
             <div v-show="uploadSettings.cloudinary.enabled">
               Cloud
               <span v-show="!item.uploadingCloud && item.uploadCloudSuccess">
-                <v-icon small color="green darken-2">
-                  fas fa-check-circle
-                </v-icon></span
+                <v-icon small color="green darken-2"> fas fa-check-circle </v-icon></span
               >
 
               <span v-show="!item.uploadingCloud && !item.uploadCloudSuccess">
-                <v-icon small color="red darken-2">
-                  fas fa-check-times
-                </v-icon></span
+                <v-icon small color="red darken-2"> fas fa-check-times </v-icon></span
               >
               <a v-show="!item.uploadingCloud && item.uploadCloudSuccess" target="_blank" v-bind:href="item.cloudUrl">{{
                 item.cloudUrl
@@ -75,15 +65,11 @@
                 indeterminate
               ></v-progress-circular>
               <span v-show="!item.uploadingFtp && item.uploadFtpSuccess">
-                <v-icon small color="green darken-2">
-                  fas fa-check-circle
-                </v-icon></span
+                <v-icon small color="green darken-2"> fas fa-check-circle </v-icon></span
               >
 
               <span v-show="!item.uploadingFtp && !item.uploadFtpSuccess">
-                <v-icon small color="red darken-2">
-                  fas fa-check-times
-                </v-icon></span
+                <v-icon small color="red darken-2"> fas fa-check-times </v-icon></span
               >
               <div>
                 <strong>{{ item.ftpHost }}</strong>
@@ -93,9 +79,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="backToHomePage">
-            Chuyển về trang chủ
-          </v-btn>
+          <v-btn color="green darken-1" text @click="backToHomePage"> Chuyển về trang chủ </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -166,9 +150,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
-            <v-expansion-panel-header>
-              Upload Cloudinary
-            </v-expansion-panel-header>
+            <v-expansion-panel-header> Upload Cloudinary </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
                 <v-col cols="3">
@@ -209,9 +191,7 @@
         </v-expansion-panels>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="closeUploadSettingsDialog">
-            Đóng
-          </v-btn>
+          <v-btn color="green darken-1" text @click="closeUploadSettingsDialog"> OK </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

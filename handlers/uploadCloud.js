@@ -1,4 +1,4 @@
-const configs = require('./configs');
+const configs = require('../configs');
 const cloudinary = require('cloudinary').v2;
 const mime = require('mime-types');
 

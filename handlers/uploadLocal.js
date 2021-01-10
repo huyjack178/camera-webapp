@@ -1,4 +1,4 @@
-const configs = require('./configs');
+const configs = require('../configs');
 const mime = require('mime-types');
 const fs = require('fs');
 const path = require('path');

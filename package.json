@@ -6,8 +6,11 @@
   "dependencies": {
     "cloudinary": "^1.23.0",
     "fastify": "^3.9.2",
+    "fastify-auth": "^1.0.1",
     "fastify-cors": "^5.1.0",
+    "fastify-jwt": "^2.2.0",
     "fastify-multer": "^2.0.2",
+    "fastify-plugin": "^3.0.0",
     "fastify-static": "^3.3.0",
     "ftp": "^0.3.10",
     "ip": "^1.1.5",
