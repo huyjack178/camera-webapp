@@ -4,17 +4,13 @@ const uploadService = new UploadService();
 
 export default {
   mounted() {
-    if (!this.$cookies.isKey('user')) {
+    if (!this.$cookies.isKey('token')) {
       this.$router.push('/login');
     }
 
     if (localStorage.getItem('uploadSettings')) {
       this.uploadSettings = JSON.parse(localStorage.getItem('uploadSettings'));
     }
-
-    setInterval(() => {
-      this.$forceUpdate();
-    }, 1000);
   },
   name: 'Home',
   data() {
@@ -67,6 +63,10 @@ export default {
       });
       this.photos.push(this.readPhotoFile(file));
       this.carouselId = this.photoFiles.length - 1;
+
+      setTimeout(() => {
+        this.$forceUpdate();
+      }, 500);
     },
 
     upload() {
@@ -79,6 +79,9 @@ export default {
         if (this.uploadSettings.local.enabled) {
           photoFile.uploadingLocal = true;
           uploadService.uploadLocalServer(fileContent, fileName, fileDate, this.uploadSettings.local.ip, response => {
+            if (this.isUnauthorized(response)) {
+              return;
+            }
             const result = response.data;
             photoFile.uploadingLocal = false;
 
@@ -88,12 +91,17 @@ export default {
             } else {
               photoFile.uploadLocalSuccess = false;
             }
+
+            this.$forceUpdate();
           });
         }
 
         if (this.uploadSettings.ftp.enabled) {
           photoFile.uploadingFtp = true;
           uploadService.uploadFTP(fileContent, fileName, this.uploadSettings.ftp, response => {
+            if (this.isUnauthorized(response)) {
+              return;
+            }
             const result = response.data;
             photoFile.uploadingFtp = false;
 
@@ -103,12 +111,17 @@ export default {
             } else {
               photoFile.uploadFtpSuccess = false;
             }
+
+            this.$forceUpdate();
           });
         }
 
         if (this.uploadSettings.cloudinary.enabled) {
           photoFile.uploadingCloud = true;
           uploadService.uploadCloud(fileContent, fileName, this.uploadSettings.cloudinary, response => {
+            if (this.isUnauthorized(response)) {
+              return;
+            }
             const result = response.data;
             photoFile.uploadingCloud = false;
 
@@ -118,6 +131,8 @@ export default {
             } else {
               photoFile.uploadCloudSuccess = false;
             }
+
+            this.$forceUpdate();
           });
         }
       });
@@ -153,6 +168,16 @@ export default {
     closeUploadSettingsDialog() {
       this.showUploadSettingsDialog = false;
       localStorage.setItem('uploadSettings', JSON.stringify(this.uploadSettings));
+    },
+
+    isUnauthorized(response) {
+      if (response.status == 401) {
+        this.$router.push('/login');
+
+        return true;
+      }
+
+      return false;
     },
   },
 };

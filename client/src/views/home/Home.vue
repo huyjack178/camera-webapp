@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height class="text-center justify-center align-center">
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="primary" dark hide-on-scroll>
       <v-spacer></v-spacer>
       <v-btn text v-on:click="showUploadSettingsDialog = true">
         <span class="mr-2">Cấu hình Upload</span>
@@ -94,7 +94,7 @@
                 <v-col cols="12">
                   <v-switch
                     v-model="uploadSettings.local.enabled"
-                    :label="uploadSettings.ftp.enabled ? 'Tắt' : 'Bật'"
+                    :label="uploadSettings.local.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
                 <v-col cols="12">
@@ -227,8 +227,16 @@
     </v-row>
     <v-row v-show="viewPhotos" id="photo-viewer">
       <v-col cols="12">
-        <v-carousel ref="carousel" v-model="carouselId">
-          <v-carousel-item v-for="(item, i) in photos" :key="i" :src="item.src"></v-carousel-item>
+        <v-carousel height="auto" ref="carousel" v-model="carouselId">
+          <v-carousel-item height="100%" v-for="(item, i) in photos" :key="i">
+            <v-img contain :src="item.src" :lazy-src="item.src" class="image">
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </v-carousel-item>
         </v-carousel>
       </v-col>
     </v-row>
@@ -263,3 +271,11 @@
   </v-container>
 </template>
 <script src="./home.js"></script>
+<style scoped>
+@media only screen and (orientation: landscape) {
+  .image {
+    height: 240px;
+    width: 100%;
+  }
+}
+</style>

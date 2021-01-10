@@ -1,3 +1,6 @@
+import LoginService from '../../services/login-service';
+const loginService = new LoginService();
+
 export default {
   mounted() {
     if (this.$cookies.isKey('user')) {
@@ -18,13 +21,16 @@ export default {
   },
   methods: {
     login() {
-      if (this.username == 'admin' && this.password == '1234aaAA') {
-        this.$cookies.set('user', 'admin', '1h');
-        this.$router.push({ name: 'Home', path: '/' });
-      } else {
-        this.showLoginError = true;
-        setTimeout(() => (this.showLoginError = false), 1000);
-      }
+      loginService.login(this.username, this.password, response => {
+        if (response.status != 200) {
+          this.showLoginError = true;
+          setTimeout(() => (this.showLoginError = false), 1000);
+        } else {
+          const token = response.data.token;
+          this.$cookies.set('token', token, '1d');
+          this.$router.push({ name: 'Home', path: '/' });
+        }
+      });
     },
   },
 };

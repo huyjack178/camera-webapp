@@ -3,7 +3,7 @@ const mime = require('mime-types');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
-var ip = require('ip');
+const address = require('address');
 
 const uploadLocal = async (req, res) => {
   const file = req.file;
@@ -19,7 +19,7 @@ const uploadLocal = async (req, res) => {
     if (err) {
       response = { error: err, success: false };
     } else {
-      response = { success: true, path: `${ip.address()}\\\\${photoFolderPath}` };
+      response = { success: true, path: `${address.ip()}\\\\${photoFolderPath}` };
     }
 
     res.code(200).send({

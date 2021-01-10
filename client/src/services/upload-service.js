@@ -41,14 +41,21 @@ class CommonUploadService {
 
   upload = (path, data, callback, serverIp) => {
     const serverUrl = serverIp ? `http://${serverIp}:3000` : configs.serverUrl;
+    const token = window.$cookies.get('token');
     axios
       .post(serverUrl + path, data, {
         headers: {
           accept: 'application/json',
           'Accept-Language': 'en-US,en;q=0.8',
           'Content-Type': `multipart/form-data`,
+          Authorization: 'Bearer ' + token,
         },
       })
-      .then(response => callback(response));
+      .then(response => callback(response))
+      .catch(error => {
+        if (error.response) {
+          callback(error.response);
+        }
+      });
   };
 }
