@@ -1,30 +1,14 @@
 <template>
-  <v-container
-    fluid
-    fill-height
-    class="text-center justify-center align-center"
-  >
+  <v-container fluid fill-height class="text-center justify-center align-center">
     <v-row>
       <v-col cols="12">
-        <v-alert
-          transition="scale-transition"
-          dense
-          outlined
-          type="error"
-          v-show="showLoginError"
-        >
+        <v-alert transition="scale-transition" dense outlined type="error" v-show="showLoginError">
           Username hoặc password chưa đúng.<br />
           Vui lòng thử lại!
         </v-alert>
       </v-col>
       <v-col cols="12">
-        <v-card
-          max-width="500"
-          elevation="2"
-          class="mx-auto pa-6"
-          outlined
-          shaped
-        >
+        <v-card max-width="500" elevation="2" class="mx-auto pa-6" outlined shaped>
           <v-row>
             <v-col cols="12">
               <v-text-field
@@ -54,15 +38,9 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-btn
-                for="files"
-                elevation="5"
-                outlined
-                rounded
-                color="primary"
-                v-on:click="login"
-              >
+              <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="login">
                 Đăng Nhập
+                <v-icon>mdi-login</v-icon>
               </v-btn>
             </v-col>
           </v-row>

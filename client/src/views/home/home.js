@@ -15,6 +15,10 @@ export default {
   name: 'Home',
   data() {
     return {
+      rules: {
+        required: value => !!value || 'Required.',
+        min: v => v.length >= 1 || 'Min 1 characters',
+      },
       uploadSettings: {
         local: {
           enabled: true,
@@ -34,14 +38,11 @@ export default {
         },
       },
       containerId: '',
-      rules: {
-        required: value => !!value || 'Required.',
-        min: v => v.length >= 1 || 'Min 1 characters',
-      },
-      viewPhotos: false,
+      containerDate: '',
       photoFiles: [],
       photos: [],
-      carouselId: 0,
+      photoCarouselId: 0,
+      showPhotosCarousel: false,
       showProgressDialog: false,
       showUploadSettingsDialog: false,
     };
@@ -51,18 +52,22 @@ export default {
       if (this.containerId) {
         this.$refs.camera.click();
       }
+
+      if (!this.containerDate) {
+        this.containerDate = moment();
+      }
     },
 
     onCapture() {
-      this.viewPhotos = true;
+      this.showPhotosCarousel = true;
       var file = this.$refs.camera.files[0];
       this.photoFiles.push({
         file,
-        date: moment(),
-        name: `${this.containerId}_${moment().format('YYMMDDhhmmss')}_${this.photoFiles.length + 1}`,
+        date: this.containerDate,
+        name: `${this.containerId}_${this.containerDate.format('YYMMDDhhmmss')}_${this.photoFiles.length + 1}`,
       });
       this.photos.push(this.readPhotoFile(file));
-      this.carouselId = this.photoFiles.length - 1;
+      this.photoCarouselId = this.photoFiles.length - 1;
 
       setTimeout(() => {
         this.$forceUpdate();
@@ -149,8 +154,8 @@ export default {
     },
 
     deletePhoto() {
-      this.photoFiles.splice(this.carouselId, 1);
-      this.photos.splice(this.carouselId, 1);
+      this.photoFiles.splice(this.photoCarouselId, 1);
+      this.photos.splice(this.photoCarouselId, 1);
 
       if (this.photoFiles.length == 0) {
         this.backToHomePage();
@@ -160,7 +165,7 @@ export default {
     backToHomePage() {
       this.containerId = '';
       this.showProgressDialog = false;
-      this.viewPhotos = false;
+      this.showPhotosCarousel = false;
       this.photoFiles = [];
       this.photos = [];
     },
@@ -178,6 +183,11 @@ export default {
       }
 
       return false;
+    },
+
+    logout() {
+      this.$cookies.remove('token');
+      this.$router.push('/login');
     },
   },
 };

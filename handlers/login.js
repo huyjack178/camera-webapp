@@ -4,11 +4,12 @@ const address = require('address');
 const login = async (req, res, server) => {
   const userName = req.body.userName;
   const password = req.body.password;
-  const serverMACs = JSON.parse(req.body.serverMACs);
+  const serverAddress = JSON.parse(req.body.serverAddress);
 
   address.mac((err, addr) => {
-    const currentServerMAC = addr.toUpperCase().replace(/:/g, '-');
-    if (!serverMACs || !serverMACs.includes(currentServerMAC)) {
+    const currentServerAdrress = addr.toUpperCase().replace(/:/g, '-');
+
+    if (!serverAddress || !serverAddress.includes(currentServerAdrress)) {
       res.code(400).send('Server MAC address is not correct');
     }
 

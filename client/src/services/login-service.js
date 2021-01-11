@@ -4,7 +4,11 @@ import configs from '../configs';
 export default class LoginService {
   login = (userName, password, callback) => {
     axios
-      .post(`${configs.serverUrl}/login`, { userName, password, serverMACs: JSON.stringify(configs.serverMACs) })
+      .post(`${configs.serverUrl}/login`, {
+        userName: userName.toLowerCase(),
+        password: password,
+        serverAddress: JSON.stringify(configs.serverAddress),
+      })
       .then(response => {
         callback(response);
       })
