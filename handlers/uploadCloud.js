@@ -3,6 +3,7 @@ const cloudinary = require('cloudinary').v2;
 const mime = require('mime-types');
 
 const uploadCloud = async (req, res) => {
+  console.log('Uploading Cloud ... ');
   const file = req.file;
   const fileName = file.originalname + '.' + mime.extension(file.mimetype);
   const cloudinarySetting = JSON.parse(req.body.cloudinarySetting);

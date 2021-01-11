@@ -6,9 +6,9 @@ const moment = require('moment');
 const address = require('address');
 
 const uploadLocal = async (req, res) => {
+  console.log('Uploading LOCAL ... ');
   const file = req.file;
   const date = req.body.fileDate;
-  console.log(file);
   const fileName = file.originalname + '.' + mime.extension(file.mimetype);
   const folderPath = `${configs.uploadDirectoryPath}/${moment(date).format('YYYY')}/${moment(date).format('YYYYMMDD')}`;
   const photoFolderPath = mkDirByPathSync(folderPath);

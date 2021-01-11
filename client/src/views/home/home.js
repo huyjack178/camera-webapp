@@ -40,10 +40,10 @@ export default {
       },
       containerId: '',
       containerDate: '',
-      photoFiles: [],
-      photos: [],
-      photoCarouselId: 0,
-      showPhotosCarousel: false,
+      imageFiles: [],
+      images: [],
+      imageCarouselId: 0,
+      showImagesCarousel: false,
       showProgressDialog: false,
       showUploadSettingsDialog: false,
     };
@@ -60,17 +60,17 @@ export default {
     },
 
     onCapture() {
-      this.showPhotosCarousel = true;
+      this.showImagesCarousel = true;
       var file = this.$refs.camera.files[0];
-      this.processPhoto(file, (photo, fileBlog) => {
-        this.photoFiles.push({
-          file: fileBlog,
+      this.processImage(file, (image, imageBlog) => {
+        this.imageFiles.push({
+          file: imageBlog,
           date: this.containerDate,
-          name: `${this.containerId}_${this.containerDate.format('YYMMDDhhmmss')}_${this.photoFiles.length + 1}`,
+          name: `${this.containerId}_${this.containerDate.format('YYMMDDhhmmss')}_${this.imageFiles.length + 1}`,
         });
 
-        this.photos.push(photo);
-        this.photoCarouselId = this.photoFiles.length - 1;
+        this.images.push(image);
+        this.imageCarouselId = this.imageFiles.length - 1;
       });
 
       setTimeout(() => {
@@ -80,25 +80,25 @@ export default {
 
     upload() {
       this.showProgressDialog = true;
-      this.photoFiles.forEach(photoFile => {
-        const fileContent = photoFile.file;
-        const fileName = photoFile.name;
-        const fileDate = photoFile.date;
+      this.imageFiles.forEach(imageFile => {
+        const fileContent = imageFile.file;
+        const fileName = imageFile.name;
+        const fileDate = imageFile.date;
 
         if (this.uploadSettings.local.enabled) {
-          photoFile.uploadingLocal = true;
+          imageFile.uploadingLocal = true;
           uploadService.uploadLocalServer(fileContent, fileName, fileDate, this.uploadSettings.local.ip, response => {
             if (this.isUnauthorized(response)) {
               return;
             }
             const result = response.data;
-            photoFile.uploadingLocal = false;
+            imageFile.uploadingLocal = false;
 
             if (result.local.success) {
-              photoFile.localPath = result.local.path;
-              photoFile.uploadLocalSuccess = true;
+              imageFile.localPath = result.local.path;
+              imageFile.uploadLocalSuccess = true;
             } else {
-              photoFile.uploadLocalSuccess = false;
+              imageFile.uploadLocalSuccess = false;
             }
 
             this.$forceUpdate();
@@ -106,19 +106,19 @@ export default {
         }
 
         if (this.uploadSettings.ftp.enabled) {
-          photoFile.uploadingFtp = true;
+          imageFile.uploadingFtp = true;
           uploadService.uploadFTP(fileContent, fileName, this.uploadSettings.ftp, response => {
             if (this.isUnauthorized(response)) {
               return;
             }
             const result = response.data;
-            photoFile.uploadingFtp = false;
+            imageFile.uploadingFtp = false;
 
             if (result.ftp.success) {
-              photoFile.ftpHost = result.ftp.host;
-              photoFile.uploadFtpSuccess = true;
+              imageFile.ftpHost = result.ftp.host;
+              imageFile.uploadFtpSuccess = true;
             } else {
-              photoFile.uploadFtpSuccess = false;
+              imageFile.uploadFtpSuccess = false;
             }
 
             this.$forceUpdate();
@@ -126,19 +126,19 @@ export default {
         }
 
         if (this.uploadSettings.cloudinary.enabled) {
-          photoFile.uploadingCloud = true;
+          imageFile.uploadingCloud = true;
           uploadService.uploadCloud(fileContent, fileName, this.uploadSettings.cloudinary, response => {
             if (this.isUnauthorized(response)) {
               return;
             }
             const result = response.data;
-            photoFile.uploadingCloud = false;
+            imageFile.uploadingCloud = false;
 
             if (result.cloud.success) {
-              photoFile.cloudUrl = result.cloud.url;
-              photoFile.uploadCloudSuccess = true;
+              imageFile.cloudUrl = result.cloud.url;
+              imageFile.uploadCloudSuccess = true;
             } else {
-              photoFile.uploadCloudSuccess = false;
+              imageFile.uploadCloudSuccess = false;
             }
 
             this.$forceUpdate();
@@ -147,7 +147,7 @@ export default {
       });
     },
 
-    processPhoto(photoFile, callback) {
+    processImage(imageFile, callback) {
       let reader = new FileReader();
 
       reader.onload = async readerEvent => {
@@ -159,14 +159,14 @@ export default {
             height = image.height;
 
           if (width > height) {
-            if (width > configs.photoMaxSize) {
-              height *= configs.photoMaxSize / width;
-              width = configs.photoMaxSize;
+            if (width > configs.imageMaxSize) {
+              height *= configs.imageMaxSize / width;
+              width = configs.imageMaxSize;
             }
           } else {
-            if (height > configs.photoMaxSize) {
-              width *= configs.photoMaxSize / height;
-              height = configs.photoMaxSize;
+            if (height > configs.imageMaxSize) {
+              width *= configs.imageMaxSize / height;
+              height = configs.imageMaxSize;
             }
           }
           canvas.width = width;
@@ -180,14 +180,14 @@ export default {
         image.src = readerEvent.target.result;
       };
 
-      reader.readAsDataURL(photoFile);
+      reader.readAsDataURL(imageFile);
     },
 
-    deletePhoto() {
-      this.photoFiles.splice(this.photoCarouselId, 1);
-      this.photos.splice(this.photoCarouselId, 1);
+    deleteImage() {
+      this.imageFiles.splice(this.imageCarouselId, 1);
+      this.images.splice(this.imageCarouselId, 1);
 
-      if (this.photoFiles.length == 0) {
+      if (this.imageFiles.length == 0) {
         this.backToHomePage();
       }
     },
@@ -195,9 +195,9 @@ export default {
     backToHomePage() {
       this.containerId = '';
       this.showProgressDialog = false;
-      this.showPhotosCarousel = false;
-      this.photoFiles = [];
-      this.photos = [];
+      this.showImagesCarousel = false;
+      this.imageFiles = [];
+      this.images = [];
     },
 
     closeUploadSettingsDialog() {

@@ -20,7 +20,7 @@
         <v-card-title class="headline"> Đang Upload ... </v-card-title>
         <v-card-text>
           <ul>
-            <li v-for="item in photoFiles" :key="item.name" class="mt-3" style="list-style: none">
+            <li v-for="item in imageFiles" :key="item.name" class="mt-3" style="list-style: none">
               <div>
                 <strong> {{ item.name }}&nbsp;</strong>
               </div>
@@ -209,7 +209,7 @@
       </v-card>
     </v-dialog>
 
-    <v-row v-show="!showPhotosCarousel" id="container-input">
+    <v-row v-show="!showImagesCarousel" id="container-input">
       <v-col cols="12">
         <v-text-field
           label="Container ID"
@@ -238,10 +238,10 @@
         />
       </v-col>
     </v-row>
-    <v-row v-show="showPhotosCarousel" id="photo-viewer">
+    <v-row v-show="showImagesCarousel" id="image-viewer">
       <v-col sm="12" class="py-0">
-        <v-carousel height="auto" ref="carousel" v-model="photoCarouselId">
-          <v-carousel-item height="100%" v-for="(item, i) in photos" :key="i">
+        <v-carousel height="auto" ref="carousel" v-model="imageCarouselId">
+          <v-carousel-item height="100%" v-for="(item, i) in images" :key="i">
             <v-img contain :src="item.src" :lazy-src="item.src" class="image">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
@@ -253,7 +253,7 @@
         </v-carousel>
       </v-col>
     </v-row>
-    <v-row v-show="showPhotosCarousel" id="buttons">
+    <v-row v-show="showImagesCarousel" id="buttons">
       <v-col sm="4" class="pb-0">
         <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
           <v-icon dark left>mdi-camera</v-icon>
@@ -267,7 +267,7 @@
           outlined
           rounded
           color="primary"
-          :disabled="photoFiles.length > 0 ? false : true"
+          :disabled="imageFiles.length > 0 ? false : true"
           v-on:click="upload"
         >
           <v-icon dark left>mdi-cloud-upload</v-icon>
@@ -275,7 +275,7 @@
         </v-btn></v-col
       >
       <v-col sm="4" class="pb-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deletePhoto">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deleteImage">
           <v-icon dark left>mdi-delete</v-icon>
           Xóa
         </v-btn></v-col
