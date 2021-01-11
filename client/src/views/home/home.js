@@ -1,4 +1,5 @@
 import moment from 'moment';
+import configs from '../../configs';
 import UploadService from '../../services/upload-service';
 const uploadService = new UploadService();
 
@@ -61,13 +62,16 @@ export default {
     onCapture() {
       this.showPhotosCarousel = true;
       var file = this.$refs.camera.files[0];
-      this.photoFiles.push({
-        file,
-        date: this.containerDate,
-        name: `${this.containerId}_${this.containerDate.format('YYMMDDhhmmss')}_${this.photoFiles.length + 1}`,
+      this.processPhoto(file, (photo, fileBlog) => {
+        this.photoFiles.push({
+          file: fileBlog,
+          date: this.containerDate,
+          name: `${this.containerId}_${this.containerDate.format('YYMMDDhhmmss')}_${this.photoFiles.length + 1}`,
+        });
+
+        this.photos.push(photo);
+        this.photoCarouselId = this.photoFiles.length - 1;
       });
-      this.photos.push(this.readPhotoFile(file));
-      this.photoCarouselId = this.photoFiles.length - 1;
 
       setTimeout(() => {
         this.$forceUpdate();
@@ -143,14 +147,40 @@ export default {
       });
     },
 
-    readPhotoFile(photoFile) {
-      var img = document.createElement('img');
-      var reader = new FileReader();
-      reader.onloadend = function() {
-        img.src = reader.result;
+    processPhoto(photoFile, callback) {
+      let reader = new FileReader();
+
+      reader.onload = async readerEvent => {
+        let image = new Image();
+        image.onload = () => {
+          // Resize the image
+          let canvas = document.createElement('canvas'),
+            width = image.width,
+            height = image.height;
+
+          if (width > height) {
+            if (width > configs.photoMaxSize) {
+              height *= configs.photoMaxSize / width;
+              width = configs.photoMaxSize;
+            }
+          } else {
+            if (height > configs.photoMaxSize) {
+              width *= configs.photoMaxSize / height;
+              height = configs.photoMaxSize;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+          let dataUrl = canvas.toDataURL('image/jpeg');
+          let resizedImage = this.dataURLToBlob(dataUrl);
+          callback(image, resizedImage);
+        };
+
+        image.src = readerEvent.target.result;
       };
+
       reader.readAsDataURL(photoFile);
-      return img;
     },
 
     deletePhoto() {
@@ -188,6 +218,30 @@ export default {
     logout() {
       this.$cookies.remove('token');
       this.$router.push('/login');
+    },
+
+    dataURLToBlob(dataURL) {
+      var BASE64_MARKER = ';base64,';
+      if (dataURL.indexOf(BASE64_MARKER) == -1) {
+        var parts = dataURL.split(',');
+        var contentType = parts[0].split(':')[1];
+        var raw = parts[1];
+
+        return new Blob([raw], { type: contentType });
+      }
+
+      parts = dataURL.split(BASE64_MARKER);
+      contentType = parts[0].split(':')[1];
+      raw = window.atob(parts[1]);
+      var rawLength = raw.length;
+
+      var uInt8Array = new Uint8Array(rawLength);
+
+      for (var i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+      }
+
+      return new Blob([uInt8Array], { type: contentType });
     },
   },
 };
