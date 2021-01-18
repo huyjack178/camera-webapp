@@ -16,7 +16,9 @@ npm run dev && cd ./client && npm run serve
 
 ### Compiles and minifies for production
 
+1. Add your current server MAC address to client config
+2. Run below commands
+
 ```
-npm run build
-npm start
+npm install -g pm2 && npm run build && npm start
 ```
