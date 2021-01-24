@@ -1,5 +1,6 @@
 module.exports = {
   jwtSecret: 'thisissecretjwt',
+  imageMaxSize: 1080,
   adminUser: {
     userName: 'admin',
     password: '1234aaAA',

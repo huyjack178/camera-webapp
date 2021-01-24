@@ -6,15 +6,15 @@ const uploadFTP = async (req, res) => {
   console.log('Uploading FTP ... ');
   const file = req.file;
   const fileName = file.originalname + '.' + mime.extension(file.mimetype);
-  const ftpSetting = JSON.parse(req.body.ftpSetting);
+  // const ftpSetting = JSON.parse(req.body.ftpSetting);
 
-  uploadToFTP(file.buffer, fileName, ftpSetting, (err) => {
+  uploadToFTP(file.buffer, fileName, (err) => {
     let response;
 
     if (err) {
       response = { error: err, success: false };
     } else {
-      response = { success: true, host: ftpSetting.host ? ftpSetting.host : configs.ftp.host };
+      response = { success: true, host: configs.ftp.host };
     }
 
     res.code(200).send({
@@ -23,10 +23,10 @@ const uploadFTP = async (req, res) => {
   });
 };
 
-const uploadToFTP = async (fileContent, fileName, ftpSetting, callback) => {
+const uploadToFTP = async (fileContent, fileName, callback) => {
   const ftpClient = new Ftp();
   try {
-    ftpClient.connect(ftpSetting.host ? ftpSetting : configs.ftp);
+    ftpClient.connect(configs.ftp);
 
     ftpClient.on('ready', function () {
       ftpClient.put(fileContent, fileName, function (err, list) {

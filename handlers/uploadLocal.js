@@ -8,9 +8,12 @@ const address = require('address');
 const uploadLocal = async (req, res) => {
   console.log('Uploading LOCAL ... ');
   const file = req.file;
+  const fileId = req.body.fileId;
   const date = req.body.fileDate;
   const fileName = file.originalname + '.' + mime.extension(file.mimetype);
-  const folderPath = `${configs.uploadDirectoryPath}/${moment(date).format('YYYY')}/${moment(date).format('YYYYMMDD')}`;
+  const folderPath = `${configs.uploadDirectoryPath}/${moment(date).format('YYYY')}/${moment(date).format(
+    'YYYYMMDD'
+  )}/${fileId}`;
   const photoFolderPath = mkDirByPathSync(folderPath);
 
   uploadToLocal(file.buffer, fileName, photoFolderPath, (err) => {

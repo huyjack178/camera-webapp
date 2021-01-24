@@ -1,7 +1,8 @@
 <template>
   <v-container fluid fill-height class="text-center justify-center align-center">
     <v-app-bar app color="primary" dark>
-      <v-btn text v-on:click="backToHomePage" class="pa-0">
+      <v-btn text v-on:click="backToHomePage" class="pa-1">
+        <v-img class="mr-1" src="~@/assets/fbsoft.png" width="20" />
         Home
       </v-btn>
       <v-spacer></v-spacer>
@@ -110,7 +111,7 @@
                     :label="uploadSettings.local.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                   <v-text-field
                     label="IP"
                     placeholder="192.0.0.1 / Để trống để upload lên host server hiện tại"
@@ -118,7 +119,7 @@
                     v-model="uploadSettings.local.ip"
                     :disabled="!uploadSettings.local.enabled"
                   ></v-text-field>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -126,13 +127,13 @@
             <v-expansion-panel-header> Upload FTP </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
-                <v-col cols="3">
+                <v-col cols="12">
                   <v-switch
                     v-model="uploadSettings.ftp.enabled"
                     :label="uploadSettings.ftp.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
-                <v-col cols="8">
+                <!-- <v-col cols="8">
                   <v-text-field
                     label="Host"
                     placeholder="192.0.0.1"
@@ -158,7 +159,7 @@
                     v-model="uploadSettings.ftp.password"
                     :disabled="!uploadSettings.ftp.enabled"
                   ></v-text-field>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -166,13 +167,13 @@
             <v-expansion-panel-header> Upload Cloudinary </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
-                <v-col cols="3">
+                <v-col cols="12">
                   <v-switch
                     v-model="uploadSettings.cloudinary.enabled"
                     :label="uploadSettings.cloudinary.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
-                <v-col cols="8">
+                <!-- <v-col cols="8">
                   <v-text-field
                     label="Cloud Name"
                     outlined
@@ -197,7 +198,7 @@
                     v-model="uploadSettings.cloudinary.api_secret"
                     :disabled="!uploadSettings.cloudinary.enabled"
                   ></v-text-field>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>

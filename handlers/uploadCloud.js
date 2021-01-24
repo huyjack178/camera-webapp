@@ -6,9 +6,9 @@ const uploadCloud = async (req, res) => {
   console.log('Uploading Cloud ... ');
   const file = req.file;
   const fileName = file.originalname + '.' + mime.extension(file.mimetype);
-  const cloudinarySetting = JSON.parse(req.body.cloudinarySetting);
+  // const cloudinarySetting = JSON.parse(req.body.cloudinarySetting);
 
-  uploadToCloud(file.buffer, fileName, cloudinarySetting, (err, uploadResponse) => {
+  uploadToCloud(file.buffer, fileName, (err, uploadResponse) => {
     let response;
     if (err) {
       response = { error: err, success: false };
@@ -25,8 +25,8 @@ const uploadCloud = async (req, res) => {
   });
 };
 
-const uploadToCloud = async (fileContent, fileName, cloudinarySetting, callback) => {
-  cloudinary.config(cloudinarySetting.cloud_name ? cloudinarySetting : configs.cloudinary);
+const uploadToCloud = async (fileContent, fileName, callback) => {
+  cloudinary.config(configs.cloudinary);
 
   try {
     const stream = cloudinary.uploader.upload_stream(

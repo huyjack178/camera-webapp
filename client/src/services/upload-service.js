@@ -7,30 +7,29 @@ export default class UploadService {
     this.commonUploadService = new CommonUploadService();
   }
 
-  uploadLocalServer = (file, fileName, fileDate, serverIp, callback) => {
-    const data = this.commonUploadService.initFormData(file, fileName, fileDate);
-    this.commonUploadService.upload('/uploadLocal', data, callback, serverIp);
+  uploadLocalServer = ({ file, fileId, fileName, fileDate }, callback) => {
+    const data = this.commonUploadService.initFormData(file, fileId, fileName, fileDate);
+    this.commonUploadService.upload('/uploadLocal', data, callback);
   };
 
-  uploadFTP = (file, fileName, ftpSetting, callback) => {
-    const data = this.commonUploadService.initFormData(file, fileName);
-    data.append('ftpSetting', JSON.stringify(ftpSetting));
+  uploadFTP = ({ file, fileId, fileName }, callback) => {
+    const data = this.commonUploadService.initFormData(file, fileId, fileName);
 
     this.commonUploadService.upload('/uploadFTP', data, callback);
   };
 
-  uploadCloud = (file, fileName, cloudinarySetting, callback) => {
-    const data = this.commonUploadService.initFormData(file, fileName);
-    data.append('cloudinarySetting', JSON.stringify(cloudinarySetting));
+  uploadCloud = ({ file, fileId, fileName }, callback) => {
+    const data = this.commonUploadService.initFormData(file, fileId, fileName);
 
     this.commonUploadService.upload('/uploadCloud', data, callback);
   };
 }
 
 class CommonUploadService {
-  initFormData = (file, fileName, fileDate = null) => {
+  initFormData = (file, fileId, fileName, fileDate = null) => {
     let data = new FormData();
     data.append('file', file, fileName);
+    data.append('fileId', fileId);
 
     if (fileDate) {
       data.append('fileDate', fileDate.toISOString());
@@ -39,8 +38,8 @@ class CommonUploadService {
     return data;
   };
 
-  upload = (path, data, callback, serverIp) => {
-    const serverUrl = serverIp ? `http://${serverIp}:3000` : configs.serverUrl;
+  upload = (path, data, callback) => {
+    const serverUrl = configs.serverUrl;
     const token = window.$cookies.get('token');
     axios
       .post(serverUrl + path, data, {

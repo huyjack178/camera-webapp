@@ -1,5 +1,4 @@
 import moment from 'moment';
-import configs from '../../configs';
 import UploadService from '../../services/upload-service';
 const uploadService = new UploadService();
 
@@ -12,6 +11,8 @@ export default {
     if (localStorage.getItem('uploadSettings')) {
       this.uploadSettings = JSON.parse(localStorage.getItem('uploadSettings'));
     }
+
+    this.imageMaxSize = localStorage.getItem('imageMaxSize') ?? 720;
   },
   name: 'Home',
   data() {
@@ -66,7 +67,8 @@ export default {
         this.imageFiles.push({
           file: imageBlog,
           date: this.containerDate,
-          name: `${this.containerId}_${this.containerDate.format('YYMMDDhhmmss')}_${this.imageFiles.length + 1}`,
+          id: this.containerId,
+          name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${this.imageFiles.length + 1}`,
         });
 
         this.images.push(image);
@@ -81,13 +83,14 @@ export default {
     upload() {
       this.showProgressDialog = true;
       this.imageFiles.forEach(imageFile => {
-        const fileContent = imageFile.file;
+        const file = imageFile.file;
         const fileName = imageFile.name;
         const fileDate = imageFile.date;
+        const fileId = imageFile.id;
 
         if (this.uploadSettings.local.enabled) {
           imageFile.uploadingLocal = true;
-          uploadService.uploadLocalServer(fileContent, fileName, fileDate, this.uploadSettings.local.ip, response => {
+          uploadService.uploadLocalServer({ file, fileId, fileName, fileDate }, response => {
             if (this.isUnauthorized(response)) {
               return;
             }
@@ -107,7 +110,7 @@ export default {
 
         if (this.uploadSettings.ftp.enabled) {
           imageFile.uploadingFtp = true;
-          uploadService.uploadFTP(fileContent, fileName, this.uploadSettings.ftp, response => {
+          uploadService.uploadFTP({ file, fileId, fileName }, response => {
             if (this.isUnauthorized(response)) {
               return;
             }
@@ -127,7 +130,7 @@ export default {
 
         if (this.uploadSettings.cloudinary.enabled) {
           imageFile.uploadingCloud = true;
-          uploadService.uploadCloud(fileContent, fileName, this.uploadSettings.cloudinary, response => {
+          uploadService.uploadCloud({ file, fileId, fileName }, response => {
             if (this.isUnauthorized(response)) {
               return;
             }
@@ -159,14 +162,14 @@ export default {
             height = image.height;
 
           if (width > height) {
-            if (width > configs.imageMaxSize) {
-              height *= configs.imageMaxSize / width;
-              width = configs.imageMaxSize;
+            if (width > this.imageMaxSize) {
+              height *= this.imageMaxSize / width;
+              width = this.imageMaxSize;
             }
           } else {
-            if (height > configs.imageMaxSize) {
-              width *= configs.imageMaxSize / height;
-              height = configs.imageMaxSize;
+            if (height > this.imageMaxSize) {
+              width *= this.imageMaxSize / height;
+              height = this.imageMaxSize;
             }
           }
           canvas.width = width;
@@ -198,6 +201,7 @@ export default {
       this.showImagesCarousel = false;
       this.imageFiles = [];
       this.images = [];
+      this.containerDate = '';
     },
 
     closeUploadSettingsDialog() {

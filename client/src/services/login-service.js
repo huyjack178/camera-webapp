@@ -8,6 +8,7 @@ export default class LoginService {
         userName: userName.toLowerCase(),
         password: password,
         serverAddress: JSON.stringify(configs.serverAddress),
+        expiredDate: configs.expiredDate,
       })
       .then(response => {
         callback(response);
