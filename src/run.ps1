@@ -76,26 +76,9 @@ npm install --global pm2
 npm install pm2-windows-startup -g
 pm2-startup install
 
-write-host "`n----------------------------"
-write-host " Build source  "
-write-host "----------------------------`n"
-
-
-$source = '.\src'
-$dest = '.\build\' + $(Get-Date -format "MMddyyyyHHmmss")
-$IP = Read-Host 'User server IP. Ex: 192.0.0.1?'
-$expired_date = Read-Host 'Expired Date (YYYY-MM-DD). Ex: 2020-01-01?'
-$mac_address = Read-Host 'MAC address. Ex: D0-37-45-F4-50-41?'
-
-# Copy-Item -Path $source -exclude 'node_modules*' -Destination  $dest -recurse -Verbose 
-robocopy $source $dest /S /XD node_modules
-Set-Location $dest
-
-(Get-Content '.\client\src\configs-pro.js') | Foreach-Object {
-    $_.replace('$IP', $IP.Trim()).replace('$EXPIRED_DATE', $expired_date.Trim()).replace('$MAC', $mac_address.Trim())
-} | Set-Content '.\client\src\configs.js'
-
-npm run build:web
- 
-Remove-Item -Recurse -Force ./client
-
+npm i
+pm2 
+pm2 kill
+pm2 start server.js
+pm2 save
+pm2 resurrect

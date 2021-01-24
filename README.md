@@ -20,5 +20,12 @@ npm run dev && cd ./client && npm run serve
 2. Run below commands
 
 ```
-npm install -g pm2 && npm run build && npm start
+./build.ps1
+```
+
+3. Copy build folder is stored in $root\build\ to client server
+4. Run this command in build folder
+
+```
+./run.ps1
 ```

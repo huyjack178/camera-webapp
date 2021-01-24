@@ -15,7 +15,7 @@ server
     origin: '*',
   })
   .register(require('fastify-static'), {
-    root: path.join(__dirname, 'client/dist'),
+    root: path.join(__dirname, 'web'),
   });
 
 server.register(require('./jwt-auth')).after(() => {
