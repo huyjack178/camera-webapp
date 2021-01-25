@@ -25,8 +25,8 @@
     "dev": "nodemon --watch ./ server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2 start ./server.js && pm2 save",
-    "build": "npm install --prefer-offline --no-audit  --only=prod && cd ./client &&  npm i  && npm run build",
-    "build:web": "cd ./client && npm install --prefer-offline --only=prod --no-audit  && npm run build"
+    "build": "npm install --prefer-offline --no-audit && cd ./client &&  npm i  && npm run build",
+    "build:web": "cd ./client && npm install --prefer-offline --no-audit  && npm run build"
   },
   "repository": {
     "type": "git",
