@@ -76,7 +76,7 @@ npm install --global pm2
 npm install pm2-windows-startup -g
 pm2-startup install
 
-npm install --prefer-offline --no-audit
+npm install --prefer-offline --only=prod --no-audit
 pm2 
 pm2 kill
 pm2 start server.js
