@@ -24,9 +24,9 @@
   "scripts": {
     "dev": "nodemon --watch ./ server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "pm2 start ./server.js && pm2 save",
-    "build": "npm install --prefer-offline --no-audit && cd ./client &&  npm i  && npm run build",
-    "build:web": "cd ./client && npm install --prefer-offline --no-audit  && npm run build"
+    "start": "pm2 kill && pm2 start ./server.js && pm2 save && pm2 resurrect",
+    "build": "yarn install && cd ./client &&  yarn install && npm run build",
+    "build:web": "cd ./client && yarn install && npm run build"
   },
   "repository": {
     "type": "git",

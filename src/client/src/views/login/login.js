@@ -28,9 +28,8 @@ export default {
         } else {
           const token = response.data.token;
           this.$cookies.set('token', token, '1d');
-
-          const imageMaxSize = response.data.imageMaxSize;
-          localStorage.setItem('imageMaxSize', imageMaxSize);
+          localStorage.setItem('userName', this.username);
+          localStorage.setItem('imageMaxSizes', response.data.imageMaxSizes);
           this.$router.push({ name: 'Home', path: '/' });
         }
       });

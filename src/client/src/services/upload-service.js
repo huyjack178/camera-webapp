@@ -7,8 +7,8 @@ export default class UploadService {
     this.commonUploadService = new CommonUploadService();
   }
 
-  uploadLocalServer = ({ file, fileId, fileName, fileDate }, callback) => {
-    const data = this.commonUploadService.initFormData(file, fileId, fileName, fileDate);
+  uploadLocalServer = ({ file, fileId, fileName, fileDate, userName, isHighResolution }, callback) => {
+    const data = this.commonUploadService.initFormData(file, fileId, fileName, fileDate, userName, isHighResolution);
     this.commonUploadService.upload('/uploadLocal', data, callback);
   };
 
@@ -26,7 +26,7 @@ export default class UploadService {
 }
 
 class CommonUploadService {
-  initFormData = (file, fileId, fileName, fileDate = null) => {
+  initFormData = (file, fileId, fileName, fileDate = null, userName = '', isHighResolution = false) => {
     let data = new FormData();
     data.append('file', file, fileName);
     data.append('fileId', fileId);
@@ -34,6 +34,12 @@ class CommonUploadService {
     if (fileDate) {
       data.append('fileDate', fileDate.toISOString());
     }
+
+    if (userName) {
+      data.append('userName', userName.toUpperCase());
+    }
+
+    data.append('isHighResolution', isHighResolution);
 
     return data;
   };

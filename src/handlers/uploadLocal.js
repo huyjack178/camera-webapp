@@ -8,12 +8,19 @@ const address = require('address');
 const uploadLocal = async (req, res) => {
   console.log('Uploading LOCAL ... ');
   const file = req.file;
-  const fileId = req.body.fileId;
   const date = req.body.fileDate;
+  const isHighResolution = req.body.isHighResolution;
+  console.log(isHighResolution);
   const fileName = file.originalname + '.' + mime.extension(file.mimetype);
-  const folderPath = `${configs.uploadDirectoryPath}/${moment(date).format('YYYY')}/${moment(date).format(
-    'YYYYMMDD'
-  )}/${fileId}`;
+  let rootFolderPath;
+
+  if (isHighResolution == 'true') {
+    rootFolderPath = `${configs.uploadDirectoryPath.high}/${moment(date).format('YYYY')}`;
+  } else {
+    rootFolderPath = `${configs.uploadDirectoryPath.low}/${moment(date).format('YYYY')}_GIAM`;
+  }
+
+  const folderPath = `${rootFolderPath}/${moment(date).format('YYYYMMDD')}/${req.body.userName}/${req.body.fileId}`;
   const photoFolderPath = mkDirByPathSync(folderPath);
 
   uploadToLocal(file.buffer, fileName, photoFolderPath, (err) => {

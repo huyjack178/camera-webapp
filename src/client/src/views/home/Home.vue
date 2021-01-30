@@ -111,15 +111,6 @@
                     :label="uploadSettings.local.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
-                <!-- <v-col cols="12">
-                  <v-text-field
-                    label="IP"
-                    placeholder="192.0.0.1 / Để trống để upload lên host server hiện tại"
-                    outlined
-                    v-model="uploadSettings.local.ip"
-                    :disabled="!uploadSettings.local.enabled"
-                  ></v-text-field>
-                </v-col> -->
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -133,33 +124,6 @@
                     :label="uploadSettings.ftp.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
-                <!-- <v-col cols="8">
-                  <v-text-field
-                    label="Host"
-                    placeholder="192.0.0.1"
-                    outlined
-                    v-model="uploadSettings.ftp.host"
-                    :disabled="!uploadSettings.ftp.enabled"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    label="Username"
-                    outlined
-                    v-model="uploadSettings.ftp.username"
-                    :disabled="!uploadSettings.ftp.enabled"
-                    class="mr-2"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    label="Password"
-                    outlined
-                    type="password"
-                    v-model="uploadSettings.ftp.password"
-                    :disabled="!uploadSettings.ftp.enabled"
-                  ></v-text-field>
-                </v-col> -->
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -173,32 +137,6 @@
                     :label="uploadSettings.cloudinary.enabled ? 'Tắt' : 'Bật'"
                   ></v-switch>
                 </v-col>
-                <!-- <v-col cols="8">
-                  <v-text-field
-                    label="Cloud Name"
-                    outlined
-                    v-model="uploadSettings.cloudinary.cloud_name"
-                    :disabled="!uploadSettings.cloudinary.enabled"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    label="API KEY"
-                    outlined
-                    v-model="uploadSettings.cloudinary.api_key"
-                    :disabled="!uploadSettings.cloudinary.enabled"
-                    class="mr-2"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    label="API SECRET"
-                    outlined
-                    type="password"
-                    v-model="uploadSettings.cloudinary.api_secret"
-                    :disabled="!uploadSettings.cloudinary.enabled"
-                  ></v-text-field>
-                </v-col> -->
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -242,8 +180,8 @@
     <v-row v-show="showImagesCarousel" id="image-viewer">
       <v-col sm="12" class="py-0">
         <v-carousel height="auto" ref="carousel" v-model="imageCarouselId">
-          <v-carousel-item height="100%" v-for="(item, i) in images" :key="i">
-            <v-img contain :src="item.src" :lazy-src="item.src" class="image">
+          <v-carousel-item height="100%" v-for="(image, i) in imageElements" :key="i">
+            <v-img contain :src="image.src" :lazy-src="image.src" class="image">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>

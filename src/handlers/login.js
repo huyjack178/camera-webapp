@@ -16,8 +16,7 @@ const login = async (req, res, server) => {
 
     if (expiredDateText) {
       const expiredDate = new Date(expiredDateText);
-      console.log(expiredDate);
-      console.log(new Date());
+
       if (expiredDate < new Date()) {
         res.code(400).send('Your license is expired');
       }
@@ -29,9 +28,12 @@ const login = async (req, res, server) => {
       res.code(400).send('Username or password is not empty');
     }
 
-    if (userName == configs.adminUser.userName && password == configs.adminUser.password) {
+    const currentUser = configs.users.find((user) => user.userName.toUpperCase() === userName.toUpperCase());
+    console.log(userName);
+
+    if (currentUser && currentUser.password === password) {
       const token = server.jwt.sign({ payload: req.query.payload });
-      res.code(200).send({ token, imageMaxSize: configs.imageMaxSize });
+      res.code(200).send({ token, imageMaxSizes: JSON.stringify(configs.imageMaxSizes) });
     } else {
       res.code(400).send('Username or password is not correct');
     }

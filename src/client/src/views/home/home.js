@@ -1,5 +1,8 @@
 import moment from 'moment';
 import UploadService from '../../services/upload-service';
+import homeUtils from './utils';
+import homeData from './data';
+
 const uploadService = new UploadService();
 
 export default {
@@ -12,42 +15,22 @@ export default {
       this.uploadSettings = JSON.parse(localStorage.getItem('uploadSettings'));
     }
 
-    this.imageMaxSize = localStorage.getItem('imageMaxSize') ?? 720;
+    if (localStorage.getItem('userName')) {
+      this.userName = localStorage.getItem('userName');
+    }
+
+    if (localStorage.getItem('imageMaxSizes')) {
+      this.imageMaxSizes = JSON.parse(localStorage.getItem('imageMaxSizes'));
+    } else {
+      this.imageMaxSizes = {
+        high: 2100,
+        low: 840,
+      };
+    }
   },
   name: 'Home',
   data() {
-    return {
-      rules: {
-        required: value => !!value || 'Required.',
-        min: v => v.length >= 1 || 'Min 1 characters',
-      },
-      uploadSettings: {
-        local: {
-          enabled: true,
-          ip: '',
-        },
-        ftp: {
-          enabled: false,
-          host: '',
-          username: '',
-          password: '',
-        },
-        cloudinary: {
-          enabled: false,
-          cloud_name: '',
-          api_key: '',
-          api_secret: '',
-        },
-      },
-      containerId: '',
-      containerDate: '',
-      imageFiles: [],
-      images: [],
-      imageCarouselId: 0,
-      showImagesCarousel: false,
-      showProgressDialog: false,
-      showUploadSettingsDialog: false,
-    };
+    return homeData.data;
   },
   methods: {
     showCamera() {
@@ -62,16 +45,18 @@ export default {
 
     onCapture() {
       this.showImagesCarousel = true;
-      var file = this.$refs.camera.files[0];
-      this.processImage(file, (image, imageBlog) => {
+      const file = this.$refs.camera.files[0];
+      console.log(file);
+
+      homeUtils.processImage(file, this.imageMaxSizes, (imageElement, { lowImageFile, highImageFile }) => {
         this.imageFiles.push({
-          file: imageBlog,
+          files: { low: lowImageFile, high: highImageFile },
           date: this.containerDate,
           id: this.containerId,
           name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${this.imageFiles.length + 1}`,
         });
 
-        this.images.push(image);
+        this.imageElements.push(imageElement);
         this.imageCarouselId = this.imageFiles.length - 1;
       });
 
@@ -83,107 +68,87 @@ export default {
     upload() {
       this.showProgressDialog = true;
       this.imageFiles.forEach(imageFile => {
-        const file = imageFile.file;
+        const filesData = imageFile.files;
         const fileName = imageFile.name;
         const fileDate = imageFile.date;
         const fileId = imageFile.id;
 
-        if (this.uploadSettings.local.enabled) {
-          imageFile.uploadingLocal = true;
-          uploadService.uploadLocalServer({ file, fileId, fileName, fileDate }, response => {
-            if (this.isUnauthorized(response)) {
-              return;
-            }
-            const result = response.data;
-            imageFile.uploadingLocal = false;
-
-            if (result.local.success) {
-              imageFile.localPath = result.local.path;
-              imageFile.uploadLocalSuccess = true;
-            } else {
-              imageFile.uploadLocalSuccess = false;
-            }
-
-            this.$forceUpdate();
-          });
-        }
-
-        if (this.uploadSettings.ftp.enabled) {
-          imageFile.uploadingFtp = true;
-          uploadService.uploadFTP({ file, fileId, fileName }, response => {
-            if (this.isUnauthorized(response)) {
-              return;
-            }
-            const result = response.data;
-            imageFile.uploadingFtp = false;
-
-            if (result.ftp.success) {
-              imageFile.ftpHost = result.ftp.host;
-              imageFile.uploadFtpSuccess = true;
-            } else {
-              imageFile.uploadFtpSuccess = false;
-            }
-
-            this.$forceUpdate();
-          });
-        }
-
-        if (this.uploadSettings.cloudinary.enabled) {
-          imageFile.uploadingCloud = true;
-          uploadService.uploadCloud({ file, fileId, fileName }, response => {
-            if (this.isUnauthorized(response)) {
-              return;
-            }
-            const result = response.data;
-            imageFile.uploadingCloud = false;
-
-            if (result.cloud.success) {
-              imageFile.cloudUrl = result.cloud.url;
-              imageFile.uploadCloudSuccess = true;
-            } else {
-              imageFile.uploadCloudSuccess = false;
-            }
-
-            this.$forceUpdate();
-          });
-        }
+        this.uploadLocal(imageFile, filesData, fileId, fileName, fileDate, this.userName);
+        this.uploadFTP(imageFile, filesData, fileId, fileName);
+        this.updateCloudinary(imageFile, filesData, fileId, fileName);
       });
     },
 
-    processImage(imageFile, callback) {
-      let reader = new FileReader();
-
-      reader.onload = async readerEvent => {
-        let image = new Image();
-        image.onload = () => {
-          // Resize the image
-          let canvas = document.createElement('canvas'),
-            width = image.width,
-            height = image.height;
-
-          if (width > height) {
-            if (width > this.imageMaxSize) {
-              height *= this.imageMaxSize / width;
-              width = this.imageMaxSize;
+    uploadLocal(imageFile, files, fileId, fileName, fileDate, userName) {
+      if (this.uploadSettings.local.enabled) {
+        imageFile.uploadingLocal = true;
+        uploadService.uploadLocalServer(
+          { file: files.high, fileId, fileName, fileDate, userName, isHighResolution: true },
+          highResponse => {
+            if (this.isUnauthorized(highResponse)) {
+              return;
             }
-          } else {
-            if (height > this.imageMaxSize) {
-              width *= this.imageMaxSize / height;
-              height = this.imageMaxSize;
-            }
+
+            uploadService.uploadLocalServer({ file: files.low, fileId, fileName, fileDate, userName }, lowResponse => {
+              const result = lowResponse.data;
+              imageFile.uploadingLocal = false;
+
+              if (result.local.success) {
+                imageFile.localPath = result.local.path;
+                imageFile.uploadLocalSuccess = true;
+              } else {
+                imageFile.uploadLocalSuccess = false;
+              }
+
+              this.$forceUpdate();
+            });
           }
-          canvas.width = width;
-          canvas.height = height;
-          canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-          let dataUrl = canvas.toDataURL('image/jpeg');
-          let resizedImage = this.dataURLToBlob(dataUrl);
-          callback(image, resizedImage);
-        };
+        );
+      }
+    },
 
-        image.src = readerEvent.target.result;
-      };
+    uploadFTP(imageFile, files, fileId, fileName) {
+      if (this.uploadSettings.ftp.enabled) {
+        imageFile.uploadingFtp = true;
+        uploadService.uploadFTP({ file: files.low, fileId, fileName }, response => {
+          if (this.isUnauthorized(response)) {
+            return;
+          }
+          const result = response.data;
+          imageFile.uploadingFtp = false;
 
-      reader.readAsDataURL(imageFile);
+          if (result.ftp.success) {
+            imageFile.ftpHost = result.ftp.host;
+            imageFile.uploadFtpSuccess = true;
+          } else {
+            imageFile.uploadFtpSuccess = false;
+          }
+
+          this.$forceUpdate();
+        });
+      }
+    },
+
+    updateCloudinary(imageFile, files, fileId, fileName) {
+      if (this.uploadSettings.cloudinary.enabled) {
+        imageFile.uploadingCloud = true;
+        uploadService.uploadCloud({ file: files.low, fileId, fileName }, response => {
+          if (this.isUnauthorized(response)) {
+            return;
+          }
+          const result = response.data;
+          imageFile.uploadingCloud = false;
+
+          if (result.cloud.success) {
+            imageFile.cloudUrl = result.cloud.url;
+            imageFile.uploadCloudSuccess = true;
+          } else {
+            imageFile.uploadCloudSuccess = false;
+          }
+
+          this.$forceUpdate();
+        });
+      }
     },
 
     deleteImage() {
@@ -200,7 +165,7 @@ export default {
       this.showProgressDialog = false;
       this.showImagesCarousel = false;
       this.imageFiles = [];
-      this.images = [];
+      this.imageElements = [];
       this.containerDate = '';
     },
 
@@ -222,30 +187,6 @@ export default {
     logout() {
       this.$cookies.remove('token');
       this.$router.push('/login');
-    },
-
-    dataURLToBlob(dataURL) {
-      var BASE64_MARKER = ';base64,';
-      if (dataURL.indexOf(BASE64_MARKER) == -1) {
-        var parts = dataURL.split(',');
-        var contentType = parts[0].split(':')[1];
-        var raw = parts[1];
-
-        return new Blob([raw], { type: contentType });
-      }
-
-      parts = dataURL.split(BASE64_MARKER);
-      contentType = parts[0].split(':')[1];
-      raw = window.atob(parts[1]);
-      var rawLength = raw.length;
-
-      var uInt8Array = new Uint8Array(rawLength);
-
-      for (var i = 0; i < rawLength; ++i) {
-        uInt8Array[i] = raw.charCodeAt(i);
-      }
-
-      return new Blob([uInt8Array], { type: contentType });
     },
   },
 };

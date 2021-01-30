@@ -1,11 +1,39 @@
 module.exports = {
   jwtSecret: 'thisissecretjwt',
-  imageMaxSize: 1080,
-  adminUser: {
-    userName: 'admin',
-    password: '1234aaAA',
+  imageMaxSizes: {
+    high: 2100,
+    low: 840,
   },
-  uploadDirectoryPath: './upload-files',
+  uploadDirectoryPath: {
+    low: './upload-files',
+    high: './upload-high-files',
+  },
+  users: [
+    {
+      userName: 'KC',
+      password: 'KC1234aaAA',
+    },
+    {
+      userName: 'VS',
+      password: 'VS1234aaAA',
+    },
+    {
+      userName: 'SC',
+      password: 'VS1234aaAA',
+    },
+    {
+      userName: 'GD',
+      password: 'VS1234aaAA',
+    },
+    {
+      userName: 'VP',
+      password: 'VS1234aaAA',
+    },
+    {
+      userName: 'admin',
+      password: '1234aaAA',
+    },
+  ],
   cloudinary: {
     cloud_name: 'harrison178',
     api_key: '249396988716972',
