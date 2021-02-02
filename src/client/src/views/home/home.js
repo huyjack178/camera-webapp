@@ -1,7 +1,7 @@
 import moment from 'moment';
 import UploadService from '../../services/upload-service';
-import homeUtils from './utils';
 import homeData from './data';
+import homeUtils from './utils';
 
 const uploadService = new UploadService();
 
@@ -46,23 +46,27 @@ export default {
     onCapture() {
       this.showImagesCarousel = true;
       const file = this.$refs.camera.files[0];
-      console.log(file);
 
-      homeUtils.processImage(file, this.imageMaxSizes, (imageElement, { lowImageFile, highImageFile }) => {
-        this.imageFiles.push({
-          files: { low: lowImageFile, high: highImageFile },
-          date: this.containerDate,
-          id: this.containerId,
-          name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${this.imageFiles.length + 1}`,
-        });
+      homeUtils.processImage(
+        file,
+        this.imageMaxSizes,
+        imageElement => {
+          this.imageElements.push(imageElement);
+          this.imageCarouselId = this.imageElements.length - 1;
 
-        this.imageElements.push(imageElement);
-        this.imageCarouselId = this.imageFiles.length - 1;
-      });
-
-      setTimeout(() => {
-        this.$forceUpdate();
-      }, 500);
+          setTimeout(() => {
+            this.$forceUpdate();
+          }, 500);
+        },
+        (lowImageFile, highImageFile) => {
+          this.imageFiles.push({
+            files: { low: lowImageFile, high: highImageFile },
+            date: this.containerDate,
+            id: this.containerId,
+            name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${this.imageFiles.length + 1}`,
+          });
+        }
+      );
     },
 
     upload() {
@@ -153,9 +157,9 @@ export default {
 
     deleteImage() {
       this.imageFiles.splice(this.imageCarouselId, 1);
-      this.images.splice(this.imageCarouselId, 1);
+      this.imageElements.splice(this.imageCarouselId, 1);
 
-      if (this.imageFiles.length == 0) {
+      if (this.imageElements.length == 0) {
         this.backToHomePage();
       }
     },

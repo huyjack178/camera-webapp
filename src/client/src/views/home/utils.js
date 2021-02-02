@@ -1,36 +1,36 @@
-import watermark from 'watermarkjs';
+import moment from 'moment';
 
 export default {
-  processImage(imageFile, imageMaxSizes, callback) {
-    watermark([imageFile])
-      .image(watermark.text.lowerRight('watermark.js', '20vw Josefin Slab', '#000', 1))
-      .then(imageElement => {
-        const lowImageFile = this.resizeImage(imageElement, imageMaxSizes.low);
-        const highImageFile = this.resizeImage(imageElement, imageMaxSizes.high);
+  processImage(imageFile, imageMaxSizes, callbackImageElement, callBackImageFile) {
+    const reader = new FileReader();
+    reader.onload = async readerEvent => {
+      const imageElement = new Image();
 
-        callback(imageElement, { lowImageFile, highImageFile });
-      });
+      imageElement.onload = () => {
+        callbackImageElement(imageElement);
+        const lowImageFile = this.resizeImage(imageElement, imageMaxSizes.low, false);
+        const highImageFile = this.resizeImage(imageElement, imageMaxSizes.high, true);
+        callBackImageFile(lowImageFile, highImageFile);
+      };
 
-    // const reader = new FileReader();
-    // reader.onload = async readerEvent => {
-    //   const imageElement = new Image();
+      imageElement.src = readerEvent.target.result;
+    };
 
-    //   imageElement.onload = () => {
-    //     this.resizeImage(imageElement, imageMaxSizes.low).then(lowImageFile => {
-    //       this.resizeImage(imageElement, imageMaxSizes.high).then(highImageFile => {
-    //         callback(imageElement, { lowImageFile, highImageFile });
-    //       });
-    //     });
-    //   };
-
-    //   imageElement.src = readerEvent.target.result;
-    // };
-
-    // reader.readAsDataURL(imageFile);
+    reader.readAsDataURL(imageFile);
   },
 
-  resizeImage(imageElement, maxSize) {
+  resizeImage(imageElement, maxSize, isHigh) {
+    const canvas = this.generateCanvas(imageElement, maxSize);
+    this.writeTextOnCanvas(canvas, isHigh, imageElement);
+    const dataUrl = canvas.toDataURL('image/jpeg');
+    const resizedImage = this.dataURLToBlob(dataUrl);
+
+    return resizedImage;
+  },
+
+  generateCanvas(imageElement, maxSize) {
     const canvas = document.createElement('canvas');
+
     let width = imageElement.width;
     let height = imageElement.height;
 
@@ -45,13 +45,31 @@ export default {
         height = maxSize;
       }
     }
+
     canvas.width = width;
     canvas.height = height;
-    canvas.getContext('2d').drawImage(imageElement, 0, 0, width, height);
-    const dataUrl = canvas.toDataURL('image/jpeg');
-    const resizedImage = this.dataURLToBlob(dataUrl);
 
-    return resizedImage;
+    return canvas;
+  },
+
+  writeTextOnCanvas(canvas, isHigh, imageElement) {
+    const ctx = canvas.getContext('2d');
+    let fontSize;
+
+    if (this.isMobile()) {
+      fontSize = isHigh ? 15 : 6;
+    } else {
+      fontSize = isHigh ? 5 : 2;
+    }
+
+    const textY = isHigh ? 120 : 50;
+    const textX = isHigh ? 100 : 50;
+    ctx.font = `bold ${fontSize}vw Courier`;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ab240c';
+    const text = moment().format('YYYY.MM.DD HH:mm');
+    ctx.fillText(text, canvas.width - (ctx.measureText(text).width + textX), canvas.height - textY);
   },
 
   dataURLToBlob(dataURL) {
@@ -76,5 +94,9 @@ export default {
     }
 
     return new Blob([uInt8Array], { type: contentType });
+  },
+
+  isMobile() {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   },
 };

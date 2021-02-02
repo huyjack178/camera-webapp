@@ -28,7 +28,7 @@
                 :rules="[rules.required, rules.min]"
                 :type="showPassword ? 'text' : 'password'"
                 hide-details="auto"
-                hint="At least 8 characters"
+                hint="At least 4 characters"
                 outlined
                 counter
                 v-model="password"
