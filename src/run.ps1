@@ -74,6 +74,7 @@ write-host "----------------------------`n"
 write-host "Installing pm2"
 npm install --global pm2
 npm install pm2-windows-startup -g
+npm install --global yarn
 pm2-startup install
 
 yarn install

@@ -3,6 +3,7 @@ node_modules
 dist
 upload-files
 build
+web
 # local env files
 .env.local
 .env.*.local
