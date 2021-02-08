@@ -86,7 +86,7 @@ $source = '.\src'
 $dest = '.\build\' + $(Get-Date -format "MMddyyyyHHmmss")
 $IP = Read-Host 'User server IP. Ex: 192.0.0.1?'
 $expired_date = Read-Host 'Expired Date (YYYY-MM-DD). Ex: 2020-01-01?'
-$serial_id = Read-Host 'Serial ID. Ex: C07E60ULJYW0?'
+$serial_id = Read-Host 'Serial ID. For Windows, run command [wmic bios get serialnumber] to get the serial number.'
 
 # Copy-Item -Path $source -exclude 'node_modules*' -Destination  $dest -recurse -Verbose 
 robocopy $source $dest /S /XD node_modules

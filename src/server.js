@@ -43,7 +43,11 @@ server.listen(3000, '0.0.0.0', (err, address) => {
 
   console.log(`Server listening at ${address}`);
 
-  serialNumber(function (err, value) {
+  serialNumber(function (error, value) {
+    if (error) {
+      console.error(error);
+    }
+
     console.log(value);
   });
 });

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import configs from '../configs';
+import configs from '../../../configs';
 
 export default class LoginService {
   login = (userName, password, callback) => {

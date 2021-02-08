@@ -1,6 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import configs from '../configs';
+import configs from '../../../configs';
 
 export default class UploadService {
   constructor() {

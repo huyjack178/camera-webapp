@@ -18,7 +18,7 @@
     </v-app-bar>
     <v-dialog v-model="showProgressDialog" persistent width="500" class="text-center" id="upload-dialog">
       <v-card>
-        <v-card-title class="headline"> Upload Hình Ảnh </v-card-title>
+        <v-card-title class="headline"> {{ uploadPopupTitle }} </v-card-title>
         <v-card-text>
           <ul>
             <li v-for="item in imageFiles" :key="item.name" class="mt-3" style="list-style: none">
@@ -100,14 +100,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
     <v-row v-show="!showImagesCarousel" id="container-input">
       <v-col cols="12">
         <v-text-field
           label="Container ID"
           style="text-transform: uppercase"
           oninput="this.value = this.value.toUpperCase()"
-          :rules="[rules.required, rules.min]"
+          :rules="[rules.required, rules.equal]"
           outlined
           hide-details="auto"
           v-model="containerId"

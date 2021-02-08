@@ -9,7 +9,7 @@ const login = async (req, res, server) => {
   const expiredDateText = req.body.expiredDate;
 
   serialNumber(function (err, serial) {
-    if (!serialNumbers || !serialNumbers.includes(serial.toUpperCase())) {
+    if (!serialNumbers || !serialNumbers.includes(serial)) {
       res.code(400).send('Server Id is not correct');
     }
 

@@ -1,9 +1,12 @@
 import moment from 'moment';
-import UploadService from '../../services/upload-service';
 import homeData from './data';
-import homeUtils from './utils';
+import UploadService from './services/upload-service';
+import ContainerIdValidator from './utils/container-id-validator';
+import ImageProcessor from './utils/image-processor';
 
 const uploadService = new UploadService();
+const imageProcessor = new ImageProcessor();
+const containerIdValidator = new ContainerIdValidator();
 
 export default {
   mounted() {
@@ -35,7 +38,17 @@ export default {
   methods: {
     showCamera() {
       if (this.containerId) {
-        this.$refs.camera.click();
+        const isOk = containerIdValidator.validate(this.containerId);
+        console.log(isOk);
+        if (!isOk) {
+          if (confirm('ISO Container chưa đúng. Bạn có muốn tiếp tục?')) {
+            this.$refs.camera.click();
+          } else {
+            this.containerId = '';
+          }
+        } else {
+          this.$refs.camera.click();
+        }
       }
 
       if (!this.containerDate) {
@@ -47,7 +60,7 @@ export default {
       this.showImagesCarousel = true;
       const file = this.$refs.camera.files[0];
 
-      homeUtils.processImage(
+      imageProcessor.processImage(
         file,
         this.imageMaxSizes,
         imageElement => {
@@ -81,6 +94,13 @@ export default {
         this.uploadFTP(imageFile, filesData, fileId, fileName);
         this.updateCloudinary(imageFile, filesData, fileId, fileName);
       });
+
+      const intervalId = setInterval(() => {
+        if (this.imageFiles.every(file => file.uploadLocalSuccess && file.uploadFtpSuccess && file.uploadCloudSuccess)) {
+          this.uploadPopupTitle = 'Upload thành công';
+          clearInterval(intervalId);
+        }
+      }, 1000);
     },
 
     uploadLocal(imageFile, files, fileId, fileName, fileDate, userName) {

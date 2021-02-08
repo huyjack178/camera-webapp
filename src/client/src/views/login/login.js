@@ -1,4 +1,4 @@
-import LoginService from '../../services/login-service';
+import LoginService from './services/login-service';
 const loginService = new LoginService();
 
 export default {

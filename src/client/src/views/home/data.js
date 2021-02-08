@@ -3,7 +3,7 @@ export default {
     return {
       rules: {
         required: value => !!value || 'Required.',
-        min: v => v.length >= 1 || 'Min 1 characters',
+        equal: v => v.length == 11 || 'Equals 11 characters',
       },
       uploadSettings: {
         local: {
@@ -31,6 +31,7 @@ export default {
       showImagesCarousel: false,
       showProgressDialog: false,
       showUploadSettingsDialog: false,
+      uploadPopupTitle: 'Đang Upload ....',
     };
   },
 };
