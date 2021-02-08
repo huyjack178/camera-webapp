@@ -36,24 +36,28 @@ export default {
     return homeData.data;
   },
   methods: {
-    showCamera() {
-      if (this.containerId) {
+    inputContainer() {
+      if (this.containerId && this.containerId.length == 11) {
         const isOk = containerIdValidator.validate(this.containerId);
-        console.log(isOk);
+
         if (!isOk) {
           if (confirm('ISO Container chưa đúng. Bạn có muốn tiếp tục?')) {
-            this.$refs.camera.click();
+            this.showCamera();
           } else {
             this.containerId = '';
           }
         } else {
-          this.$refs.camera.click();
+          this.showCamera();
         }
       }
 
       if (!this.containerDate) {
         this.containerDate = moment();
       }
+    },
+
+    showCamera() {
+      this.$refs.camera.click();
     },
 
     onCapture() {

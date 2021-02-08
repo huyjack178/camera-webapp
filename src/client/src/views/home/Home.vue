@@ -113,7 +113,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="inputContainer">
           <v-icon dark left>mdi-camera</v-icon>
           Chụp
         </v-btn>
