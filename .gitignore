@@ -2,6 +2,7 @@
 node_modules
 dist
 upload-files
+upload-high-files
 build
 web
 # local env files

@@ -18,7 +18,7 @@
     </v-app-bar>
     <v-dialog v-model="showProgressDialog" persistent width="500" class="text-center" id="upload-dialog">
       <v-card>
-        <v-card-title class="headline"> Đang Upload ... </v-card-title>
+        <v-card-title class="headline"> Upload Hình Ảnh </v-card-title>
         <v-card-text>
           <ul>
             <li v-for="item in imageFiles" :key="item.name" class="mt-3" style="list-style: none">
@@ -27,66 +27,28 @@
               </div>
               <div v-show="uploadSettings.local.enabled">
                 Local Server
-                <v-progress-circular
-                  v-show="item.uploadingLocal"
-                  :width="3"
-                  :size="20"
-                  color="primary"
-                  indeterminate
-                ></v-progress-circular>
-                <span v-show="!item.uploadingLocal && item.uploadLocalSuccess">
-                  <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span
-                >
-
-                <span v-show="!item.uploadingLocal && !item.uploadLocalSuccess">
-                  <v-icon small color="red darken-2"> mdi-error </v-icon></span
-                >
-                <div>
+                <v-progress-circular v-show="item.uploadingLocal" :width="3" :size="20" color="primary" indeterminate></v-progress-circular>
+                <span v-show="!item.uploadingLocal && item.uploadLocalSuccess"> <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span>
+                <span v-show="!item.uploadingLocal && !item.uploadLocalSuccess"> <v-icon small color="red darken-2"> mdi-error </v-icon></span>
+                <!-- <div>
                   <strong>{{ item.localPath }}</strong>
-                </div>
+                </div> -->
               </div>
               <div v-show="uploadSettings.cloudinary.enabled">
                 Cloud
-                <span v-show="!item.uploadingCloud && item.uploadCloudSuccess">
-                  <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span
-                >
-
-                <span v-show="!item.uploadingCloud && !item.uploadCloudSuccess">
-                  <v-icon small color="red darken-2"> mdi-error </v-icon></span
-                >
-                <a
-                  v-show="!item.uploadingCloud && item.uploadCloudSuccess"
-                  target="_blank"
-                  v-bind:href="item.cloudUrl"
-                  >{{ item.cloudUrl }}</a
-                >
-                <v-progress-circular
-                  v-show="item.uploadingCloud"
-                  :width="3"
-                  :size="20"
-                  color="primary"
-                  indeterminate
-                ></v-progress-circular>
+                <span v-show="!item.uploadingCloud && item.uploadCloudSuccess"> <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span>
+                <span v-show="!item.uploadingCloud && !item.uploadCloudSuccess"> <v-icon small color="red darken-2"> mdi-error </v-icon></span>
+                <a v-show="!item.uploadingCloud && item.uploadCloudSuccess" target="_blank" v-bind:href="item.cloudUrl">{{ item.cloudUrl }}</a>
+                <v-progress-circular v-show="item.uploadingCloud" :width="3" :size="20" color="primary" indeterminate></v-progress-circular>
               </div>
               <div v-show="uploadSettings.ftp.enabled">
                 FTP
-                <v-progress-circular
-                  v-show="item.uploadingFtp"
-                  :width="3"
-                  :size="20"
-                  color="primary"
-                  indeterminate
-                ></v-progress-circular>
-                <span v-show="!item.uploadingFtp && item.uploadFtpSuccess">
-                  <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span
-                >
-
-                <span v-show="!item.uploadingFtp && !item.uploadFtpSuccess">
-                  <v-icon small color="red darken-2"> mdi-error </v-icon></span
-                >
-                <div>
+                <v-progress-circular v-show="item.uploadingFtp" :width="3" :size="20" color="primary" indeterminate></v-progress-circular>
+                <span v-show="!item.uploadingFtp && item.uploadFtpSuccess"> <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span>
+                <span v-show="!item.uploadingFtp && !item.uploadFtpSuccess"> <v-icon small color="red darken-2"> mdi-error </v-icon></span>
+                <!-- <div>
                   <strong>{{ item.ftpHost }}</strong>
-                </div>
+                </div> -->
               </div>
             </li>
           </ul>
@@ -106,10 +68,7 @@
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
                 <v-col cols="12">
-                  <v-switch
-                    v-model="uploadSettings.local.enabled"
-                    :label="uploadSettings.local.enabled ? 'Tắt' : 'Bật'"
-                  ></v-switch>
+                  <v-switch v-model="uploadSettings.local.enabled" :label="uploadSettings.local.enabled ? 'Tắt' : 'Bật'"></v-switch>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -119,10 +78,7 @@
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
                 <v-col cols="12">
-                  <v-switch
-                    v-model="uploadSettings.ftp.enabled"
-                    :label="uploadSettings.ftp.enabled ? 'Tắt' : 'Bật'"
-                  ></v-switch>
+                  <v-switch v-model="uploadSettings.ftp.enabled" :label="uploadSettings.ftp.enabled ? 'Tắt' : 'Bật'"></v-switch>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -132,10 +88,7 @@
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
                 <v-col cols="12">
-                  <v-switch
-                    v-model="uploadSettings.cloudinary.enabled"
-                    :label="uploadSettings.cloudinary.enabled ? 'Tắt' : 'Bật'"
-                  ></v-switch>
+                  <v-switch v-model="uploadSettings.cloudinary.enabled" :label="uploadSettings.cloudinary.enabled ? 'Tắt' : 'Bật'"></v-switch>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -165,16 +118,7 @@
           <v-icon dark left>mdi-camera</v-icon>
           Chụp
         </v-btn>
-        <input
-          v-show="false"
-          type="file"
-          ref="camera"
-          multiple="multiple"
-          id="camera"
-          accept="image/*"
-          capture="camera"
-          v-on:change="onCapture"
-        />
+        <input v-show="false" type="file" ref="camera" multiple="multiple" id="camera" accept="image/*" capture="camera" v-on:change="onCapture" />
       </v-col>
     </v-row>
     <v-row v-show="showImagesCarousel" id="image-viewer">
@@ -200,15 +144,7 @@
         </v-btn>
       </v-col>
       <v-col sm="4" class="pb-0">
-        <v-btn
-          for="files"
-          elevation="5"
-          outlined
-          rounded
-          color="primary"
-          :disabled="imageFiles.length > 0 ? false : true"
-          v-on:click="upload"
-        >
+        <v-btn for="files" elevation="5" outlined rounded color="primary" :disabled="imageFiles.length > 0 ? false : true" v-on:click="upload">
           <v-icon dark left>mdi-cloud-upload</v-icon>
           Ghi
         </v-btn></v-col

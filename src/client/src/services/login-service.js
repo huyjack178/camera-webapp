@@ -7,7 +7,7 @@ export default class LoginService {
       .post(`${configs.serverUrl}/login`, {
         userName: userName.toLowerCase(),
         password: password,
-        serverAddress: JSON.stringify(configs.serverAddress),
+        serialNumbers: JSON.stringify(configs.serialNumbers),
         expiredDate: configs.expiredDate,
       })
       .then(response => {

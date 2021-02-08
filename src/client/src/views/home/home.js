@@ -86,28 +86,25 @@ export default {
     uploadLocal(imageFile, files, fileId, fileName, fileDate, userName) {
       if (this.uploadSettings.local.enabled) {
         imageFile.uploadingLocal = true;
-        uploadService.uploadLocalServer(
-          { file: files.high, fileId, fileName, fileDate, userName, isHighResolution: true },
-          highResponse => {
-            if (this.isUnauthorized(highResponse)) {
-              return;
+        uploadService.uploadLocalServer({ file: files.high, fileId, fileName, fileDate, userName, isHighResolution: true }, highResponse => {
+          if (this.isUnauthorized(highResponse)) {
+            return;
+          }
+
+          uploadService.uploadLocalServer({ file: files.low, fileId, fileName, fileDate, userName }, lowResponse => {
+            const result = lowResponse.data;
+            imageFile.uploadingLocal = false;
+
+            if (result.local.success) {
+              imageFile.localPath = result.local.path;
+              imageFile.uploadLocalSuccess = true;
+            } else {
+              imageFile.uploadLocalSuccess = false;
             }
 
-            uploadService.uploadLocalServer({ file: files.low, fileId, fileName, fileDate, userName }, lowResponse => {
-              const result = lowResponse.data;
-              imageFile.uploadingLocal = false;
-
-              if (result.local.success) {
-                imageFile.localPath = result.local.path;
-                imageFile.uploadLocalSuccess = true;
-              } else {
-                imageFile.uploadLocalSuccess = false;
-              }
-
-              this.$forceUpdate();
-            });
-          }
-        );
+            this.$forceUpdate();
+          });
+        });
       }
     },
 

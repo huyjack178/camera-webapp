@@ -8,6 +8,7 @@ const uploadFtpHandler = require('./handlers/uploadFTP');
 const uploadCloudHandler = require('./handlers/uploadCloud');
 const uploadLocalHandler = require('./handlers/uploadLocal');
 const loginHandler = require('./handlers/login');
+const serialNumber = require('serial-number');
 
 server
   .register(multer.contentParser)
@@ -19,21 +20,9 @@ server
   });
 
 server.register(require('./jwt-auth')).after(() => {
-  server.post(
-    '/uploadCloud',
-    { preValidation: [server.authenticate], preHandler: upload.single('file') },
-    uploadCloudHandler
-  );
-  server.post(
-    '/uploadFTP',
-    { preValidation: [server.authenticate], preHandler: upload.single('file') },
-    uploadFtpHandler
-  );
-  server.post(
-    '/uploadLocal',
-    { preValidation: [server.authenticate], preHandler: upload.single('file') },
-    uploadLocalHandler
-  );
+  server.post('/uploadCloud', { preValidation: [server.authenticate], preHandler: upload.single('file') }, uploadCloudHandler);
+  server.post('/uploadFTP', { preValidation: [server.authenticate], preHandler: upload.single('file') }, uploadFtpHandler);
+  server.post('/uploadLocal', { preValidation: [server.authenticate], preHandler: upload.single('file') }, uploadLocalHandler);
 
   server.get('/', function (req, res) {
     res.sendFile('index.html');
@@ -53,4 +42,8 @@ server.listen(3000, '0.0.0.0', (err, address) => {
   }
 
   console.log(`Server listening at ${address}`);
+
+  serialNumber(function (err, value) {
+    console.log(value);
+  });
 });
