@@ -44,4 +44,14 @@ module.exports = {
     user: 'dlpuser',
     password: 'rNrKYTX9g7z3RgJRmxWuGHbeu',
   },
+  // cloudinary: {
+  //   cloud_name: '',
+  //   api_key: '',
+  //   api_secret: '',
+  // },
+  // ftp: {
+  //   host: '',
+  //   user: '',
+  //   password: '',
+  // },
 };

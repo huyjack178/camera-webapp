@@ -18,6 +18,10 @@ export default {
       this.uploadSettings = JSON.parse(localStorage.getItem('uploadSettings'));
     }
 
+    if (localStorage.getItem('serverSettings')) {
+      this.serverSettings = JSON.parse(localStorage.getItem('serverSettings'));
+    }
+
     if (localStorage.getItem('userName')) {
       this.userName = localStorage.getItem('userName');
     }
@@ -192,10 +196,14 @@ export default {
       this.imageFiles = [];
       this.imageElements = [];
       this.containerDate = '';
+      this.uploadPopupTitle = 'Đang Upload ....';
     },
 
     closeUploadSettingsDialog() {
       this.showUploadSettingsDialog = false;
+      const serverSettings = JSON.parse(localStorage.getItem('serverSettings'));
+      this.uploadSettings.ftp.enabled = this.uploadSettings.ftp.enabled && serverSettings.ftp.enabled;
+      this.uploadSettings.cloudinary.enabled = this.uploadSettings.cloudinary.enabled && serverSettings.cloudinary.enabled;
       localStorage.setItem('uploadSettings', JSON.stringify(this.uploadSettings));
     },
 

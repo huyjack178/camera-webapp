@@ -23,6 +23,14 @@ export default {
           api_secret: '',
         },
       },
+      serverSettings: {
+        ftp: {
+          enabled: false,
+        },
+        cloudinary: {
+          enabled: false,
+        },
+      },
       containerId: '',
       containerDate: '',
       imageFiles: [],

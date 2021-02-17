@@ -28,11 +28,14 @@ const login = async (req, res, server) => {
     }
 
     const currentUser = configs.users.find((user) => user.userName.toUpperCase() === userName.toUpperCase());
-    console.log(userName);
 
     if (currentUser && currentUser.password === password) {
       const token = server.jwt.sign({ payload: req.query.payload });
-      res.code(200).send({ token, imageMaxSizes: JSON.stringify(configs.imageMaxSizes) });
+      res.code(200).send({
+        token,
+        imageMaxSizes: JSON.stringify(configs.imageMaxSizes),
+        settings: JSON.stringify({ ftp: { enabled: !!configs.ftp.host }, cloudinary: { enabled: !!configs.cloudinary.cloud_name } }),
+      });
     } else {
       res.code(400).send('Username or password is not correct');
     }
