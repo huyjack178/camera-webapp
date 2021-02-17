@@ -14,6 +14,10 @@ export default class ContainerIdValidator {
 
     const checkNumber = total % 11;
 
+    if (checkNumber === 10 && lastChar === '0') {
+      return true;
+    }
+
     if (checkNumber.toString() === lastChar) {
       return true;
     }

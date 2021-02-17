@@ -100,7 +100,7 @@ export default {
       });
 
       const intervalId = setInterval(() => {
-        if (this.imageFiles.every(file => file.uploadLocalSuccess && file.uploadFtpSuccess && file.uploadCloudSuccess)) {
+        if (this.imageFiles.every(file => this.uploadSuccess(file))) {
           this.uploadPopupTitle = 'Upload thành công';
           clearInterval(intervalId);
         }
@@ -212,6 +212,24 @@ export default {
     logout() {
       this.$cookies.remove('token');
       this.$router.push('/login');
+    },
+
+    uploadSuccess(file) {
+      let result = false;
+
+      if (this.uploadSettings.local.enabled) {
+        result = file.uploadLocalSuccess;
+      }
+
+      if (this.uploadSettings.ftp.enabled) {
+        result = result && file.uploadFtpSuccess;
+      }
+
+      if (this.uploadSettings.cloudinary.enabled) {
+        result = result && file.uploadCloudSuccess;
+      }
+
+      return result;
     },
   },
 };
