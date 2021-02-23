@@ -4,7 +4,7 @@ write-host "`n  ## NODEJS INSTALLER ## `n"
 
 # nodejs
 $version = "14.15.4-x64"
-$url = "https://nodejs.org/dist/latest-v14.x/node-v$version.msi"
+$url = "https://nodejs.org/dist/v14.15.4/node-v14.15.4-x64.msi"
 
 # activate / desactivate any install
 $install_node = $TRUE
