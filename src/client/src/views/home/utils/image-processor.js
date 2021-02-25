@@ -56,11 +56,20 @@ const generateCanvas = (imageElement, maxSize) => {
 const writeTextOnCanvas = (canvas, isHigh, imageElement) => {
   const ctx = canvas.getContext('2d');
   let fontSize;
+  const isLandscape = canvas.width > canvas.height;
 
   if (isMobile()) {
-    fontSize = isHigh ? 15 : 6;
+    if (isHigh) {
+      fontSize = isLandscape ? 7 : 15;
+    } else {
+      fontSize = isLandscape ? 3 : 6;
+    }
   } else {
-    fontSize = isHigh ? 5 : 2;
+    if (isHigh) {
+      fontSize = isLandscape ? 2 : 5;
+    } else {
+      fontSize = isLandscape ? 1 : 2;
+    }
   }
 
   const textY = isHigh ? 120 : 50;

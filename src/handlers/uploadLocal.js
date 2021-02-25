@@ -20,7 +20,7 @@ const uploadLocal = async (req, res) => {
     rootFolderPath = `${configs.uploadDirectoryPath.low}/${moment(date).format('YYYY')}_GIAM`;
   }
 
-  const folderPath = `${rootFolderPath}/${moment(date).format('YYYYMMDD')}/${req.body.userName}/${req.body.fileId}`;
+  const folderPath = `${rootFolderPath}/${moment(date).format('MM')}/${moment(date).format('YYYYMMDD')}/${req.body.userName}/${req.body.fileId}`;
   const photoFolderPath = mkDirByPathSync(folderPath);
 
   uploadToLocal(file.buffer, fileName, photoFolderPath, (err) => {
