@@ -122,11 +122,11 @@
     </v-row>
     <v-row v-show="showImagesCarousel" id="buttons" class="ma-0">
       <v-col sm="4" class="pa-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
-          <v-icon dark left>mdi-camera</v-icon>
-          Chụp
-        </v-btn>
-      </v-col>
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deleteImage">
+          <v-icon dark left>mdi-delete</v-icon>
+          Xóa
+        </v-btn></v-col
+      >
       <v-col sm="4" class="pa-0">
         <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="upload">
           <v-icon dark left>mdi-cloud-upload</v-icon>
@@ -134,11 +134,11 @@
         </v-btn></v-col
       >
       <v-col sm="4" class="pa-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deleteImage">
-          <v-icon dark left>mdi-delete</v-icon>
-          Xóa
-        </v-btn></v-col
-      >
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
+          <v-icon dark left>mdi-camera</v-icon>
+          Chụp
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row v-show="showImagesCarousel" id="image-viewer">
       <v-col sm="12" class="py-0">

@@ -77,6 +77,7 @@ export default {
 
           setTimeout(() => {
             this.$forceUpdate();
+            window.scrollTo(0, 0);
           }, 500);
         },
         (lowImageFile, highImageFile) => {
