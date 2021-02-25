@@ -128,7 +128,7 @@
         </v-btn>
       </v-col>
       <v-col sm="4" class="pa-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" :disabled="imageFiles.length > 0 ? false : true" v-on:click="upload">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="upload">
           <v-icon dark left>mdi-cloud-upload</v-icon>
           Ghi
         </v-btn></v-col
