@@ -120,6 +120,26 @@
         <input v-show="false" type="file" ref="camera" multiple="multiple" id="camera" accept="image/*" capture="camera" v-on:change="onCapture" />
       </v-col>
     </v-row>
+    <v-row v-show="showImagesCarousel" id="buttons" class="ma-0">
+      <v-col sm="4" class="pa-0">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
+          <v-icon dark left>mdi-camera</v-icon>
+          Chụp
+        </v-btn>
+      </v-col>
+      <v-col sm="4" class="pa-0">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" :disabled="imageFiles.length > 0 ? false : true" v-on:click="upload">
+          <v-icon dark left>mdi-cloud-upload</v-icon>
+          Ghi
+        </v-btn></v-col
+      >
+      <v-col sm="4" class="pa-0">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deleteImage">
+          <v-icon dark left>mdi-delete</v-icon>
+          Xóa
+        </v-btn></v-col
+      >
+    </v-row>
     <v-row v-show="showImagesCarousel" id="image-viewer">
       <v-col sm="12" class="py-0">
         <v-carousel height="auto" ref="carousel" v-model="imageCarouselId">
@@ -134,26 +154,6 @@
           </v-carousel-item>
         </v-carousel>
       </v-col>
-    </v-row>
-    <v-row v-show="showImagesCarousel" id="buttons">
-      <v-col sm="4" class="pb-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
-          <v-icon dark left>mdi-camera</v-icon>
-          Chụp
-        </v-btn>
-      </v-col>
-      <v-col sm="4" class="pb-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" :disabled="imageFiles.length > 0 ? false : true" v-on:click="upload">
-          <v-icon dark left>mdi-cloud-upload</v-icon>
-          Ghi
-        </v-btn></v-col
-      >
-      <v-col sm="4" class="pb-0">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="deleteImage">
-          <v-icon dark left>mdi-delete</v-icon>
-          Xóa
-        </v-btn></v-col
-      >
     </v-row>
   </v-container>
 </template>
