@@ -7,10 +7,13 @@ export default class ImageProcessor {
       const imageElement = new Image();
 
       imageElement.onload = () => {
-        callbackImageElement(imageElement);
-        const lowImageFile = resizeImage(imageElement, imageMaxSizes.low, false);
-        const highImageFile = resizeImage(imageElement, imageMaxSizes.high, true);
-        callBackImageFile(lowImageFile, highImageFile);
+        const lowImage = resizeImage(imageElement, imageMaxSizes.low, false);
+        const highImage = resizeImage(imageElement, imageMaxSizes.high, true);
+        callBackImageFile(lowImage.blog, highImage.blog);
+
+        const image = new Image();
+        image.src = lowImage.dataUrl;
+        callbackImageElement(image);
       };
 
       imageElement.src = readerEvent.target.result;
@@ -24,9 +27,9 @@ const resizeImage = (imageElement, maxSize, isHigh) => {
   const canvas = generateCanvas(imageElement, maxSize);
   writeTextOnCanvas(canvas, isHigh, imageElement);
   const dataUrl = canvas.toDataURL('image/jpeg');
-  const resizedImage = dataURLToBlob(dataUrl);
+  const blog = dataURLToBlob(dataUrl);
 
-  return resizedImage;
+  return { blog, dataUrl };
 };
 
 const generateCanvas = (imageElement, maxSize) => {
