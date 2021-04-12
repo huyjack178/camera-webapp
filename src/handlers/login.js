@@ -10,21 +10,21 @@ const login = async (req, res, server) => {
 
   serialNumber(function (err, serial) {
     if (!serialNumbers || !serialNumbers.includes(serial)) {
-      res.code(400).send('Server Id is not correct');
+      res.code(400).send('Thông tin server serial number chưa đúng');
     }
 
     if (expiredDateText) {
       const expiredDate = new Date(expiredDateText);
 
       if (expiredDate < new Date()) {
-        res.code(400).send('Your license is expired');
+        res.code(400).send('License của bạn bị hết hạn');
       }
     } else {
-      res.code(400).send('Your license is expired');
+      res.code(400).send('License của bạn bị hết hạn');
     }
 
     if (!userName || !password) {
-      res.code(400).send('Username or password is not empty');
+      res.code(400).send('Username hoặc password không hợp lệ');
     }
 
     const currentUser = configs.users.find((user) => user.userName.toUpperCase() === userName.toUpperCase());
@@ -37,7 +37,7 @@ const login = async (req, res, server) => {
         settings: JSON.stringify({ ftp: { enabled: !!configs.ftp.host }, cloudinary: { enabled: !!configs.cloudinary.cloud_name } }),
       });
     } else {
-      res.code(400).send('Username or password is not correct');
+      res.code(400).send('Username hoặc password chưa đúng');
     }
   });
 };

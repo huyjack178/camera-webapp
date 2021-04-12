@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12">
         <v-alert transition="scale-transition" dense outlined type="error" v-show="showLoginError">
-          Username hoặc password chưa đúng.<br />
+          {{ loginErrorResponse }}<br />
           Vui lòng thử lại!
         </v-alert>
       </v-col>
@@ -11,13 +11,7 @@
         <v-card max-width="500" elevation="2" class="mx-auto pa-6" outlined shaped>
           <v-row>
             <v-col cols="12">
-              <v-text-field
-                label="Username"
-                :rules="[rules.required]"
-                hide-details="auto"
-                outlined
-                v-model="username"
-              ></v-text-field>
+              <v-text-field label="Username" :rules="[rules.required]" hide-details="auto" outlined v-model="username"></v-text-field>
             </v-col>
           </v-row>
           <v-row>

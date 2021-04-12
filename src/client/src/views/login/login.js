@@ -13,6 +13,7 @@ export default {
       password: '',
       showPassword: false,
       showLoginError: false,
+      loginErrorResponse: '',
       rules: {
         required: value => !!value || 'Required.',
         min: v => v.length >= 4 || 'Min 4 characters',
@@ -24,6 +25,7 @@ export default {
       loginService.login(this.username, this.password, response => {
         if (response.status != 200) {
           this.showLoginError = true;
+          this.loginErrorResponse = response.data;
           setTimeout(() => (this.showLoginError = false), 1000);
         } else {
           const token = response.data.token;
