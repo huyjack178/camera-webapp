@@ -142,26 +142,25 @@
       </v-col>
     </v-row>
     <v-row v-show="showContainerButtons" id="buttons" class="ma-0">
-      <v-col cols="12"> Đã chụp {{ imageElements.length }} ảnh</v-col>
-      <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
-          <v-icon dark left>mdi-camera</v-icon>
-          Chụp
-        </v-btn>
-      </v-col>
-
-      <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="onShowingContainerImages">
-          <v-icon dark left>mdi-file</v-icon>
-          Xem Hình
-        </v-btn>
-      </v-col>
-      <v-col cols="12">
+      <v-col sm="12" cols="12"> Đã chụp {{ imageElements.length }} ảnh</v-col>
+      <v-col sm="4" class="pa-0">
         <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="upload">
           <v-icon dark left>mdi-cloud-upload</v-icon>
           Ghi
         </v-btn></v-col
       >
+      <v-col sm="4" class="pa-0">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="onShowingContainerImages">
+          <v-icon dark left>mdi-file</v-icon>
+          Xem
+        </v-btn>
+      </v-col>
+      <v-col sm="4" class="pa-0">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
+          <v-icon dark left>mdi-camera</v-icon>
+          Chụp
+        </v-btn>
+      </v-col>
     </v-row>
   </v-container>
 </template>
