@@ -101,7 +101,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="showImagesCarousel" id="image-viewer" persistent width="500" class="text-center">
+    <v-dialog v-model="showImagesCarousel" id="image-viewer" persistent class="text-center">
       <v-card>
         <v-carousel height="auto" ref="carousel" v-model="imageCarouselId">
           <v-carousel-item height="100%" v-for="(image, i) in imageElements" :key="i">
