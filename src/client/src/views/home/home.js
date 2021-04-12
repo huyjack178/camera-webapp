@@ -65,7 +65,7 @@ export default {
     },
 
     onCapture() {
-      this.showImagesCarousel = true;
+      this.showContainerButtons = true;
       const file = this.$refs.camera.files[0];
 
       imageProcessor.processImage(
@@ -74,11 +74,6 @@ export default {
         imageElement => {
           this.imageElements.push(imageElement);
           this.imageCarouselId = this.imageElements.length - 1;
-
-          setTimeout(() => {
-            this.$forceUpdate();
-            window.scrollTo(0, 0);
-          }, 500);
         },
         (lowImageFile, highImageFile) => {
           this.imageFiles.push({
@@ -181,12 +176,21 @@ export default {
       }
     },
 
+    onShowingContainerImages() {
+      if (this.imageElements.length == 0) {
+        alert('Không có hình để xem');
+        return;
+      }
+
+      this.showImagesCarousel = true;
+    },
+
     deleteImage() {
       this.imageFiles.splice(this.imageCarouselId, 1);
       this.imageElements.splice(this.imageCarouselId, 1);
 
       if (this.imageElements.length == 0) {
-        this.backToHomePage();
+        this.showImagesCarousel = false;
       }
     },
 
@@ -194,6 +198,7 @@ export default {
       this.containerId = '';
       this.showProgressDialog = false;
       this.showImagesCarousel = false;
+      this.showContainerButtons = false;
       this.imageFiles = [];
       this.imageElements = [];
       this.containerDate = '';

@@ -37,6 +37,7 @@ export default {
       imageElements: [],
       imageCarouselId: 0,
       showImagesCarousel: false,
+      showContainerButtons: false,
       showProgressDialog: false,
       showUploadSettingsDialog: false,
       uploadPopupTitle: 'Đang Upload ....',
