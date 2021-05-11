@@ -11,7 +11,7 @@ const uploadLocal = async (req, res) => {
   const date = req.body.fileDate;
   const isHighResolution = req.body.isHighResolution;
   console.log(isHighResolution);
-  const fileName = file.originalname + '.' + mime.extension(file.mimetype);
+  const fileName = file.originalname + '.jpg';
   let rootFolderPath;
 
   if (isHighResolution == 'true') {

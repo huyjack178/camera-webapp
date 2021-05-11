@@ -5,8 +5,7 @@ const mime = require('mime-types');
 const uploadFTP = async (req, res) => {
   console.log('Uploading FTP ... ');
   const file = req.file;
-  const fileName = file.originalname + '.' + mime.extension(file.mimetype);
-  // const ftpSetting = JSON.parse(req.body.ftpSetting);
+  const fileName = file.originalname + '.jpg';
 
   uploadToFTP(file.buffer, fileName, (err) => {
     let response;
