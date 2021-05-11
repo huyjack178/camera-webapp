@@ -80,7 +80,7 @@ export default {
             files: { low: lowImageFile, high: highImageFile },
             date: this.containerDate,
             id: this.containerId,
-            name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${this.imageFiles.length + 1}`,
+            name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${('0' + (this.imageFiles.length + 1)).slice(-2)}`,
           });
         }
       );
