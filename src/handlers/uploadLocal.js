@@ -9,7 +9,7 @@ const uploadLocal = async (req, res) => {
   console.log('Uploading LOCAL ... ');
   const file = req.file;
   const date = req.body.fileDate;
-  const isHighResolution = req.body.isHighResolution;
+  const isHighResolution = req.body.isHighResolution && configs.uploadDirectoryPath.high != '';
   console.log(isHighResolution);
   const fileName = file.originalname + '.jpg';
   let rootFolderPath;
