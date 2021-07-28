@@ -43,7 +43,7 @@ module.exports = {
     host: '203.128.242.134',
     port: '5021',
     user: 'test1',
-    rootFolder: '',
+    rootFolder: '/SFTP_BAOGIA/',
     password: 'Solog2021#',
   },
   // cloudinary: {

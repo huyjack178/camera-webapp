@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "address": "^1.1.2",
+    "basic-ftp": "^4.6.6",
     "cloudinary": "^1.23.0",
     "fastify": "^3.9.2",
     "fastify-cors": "^5.1.0",

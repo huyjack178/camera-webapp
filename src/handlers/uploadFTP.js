@@ -1,13 +1,14 @@
 const configs = require('../configs');
-const Ftp = require('ftp');
+const ftp = require('basic-ftp');
 const mime = require('mime-types');
+const { Readable } = require('stream');
 
 const uploadFTP = async (req, res) => {
   console.log('Uploading FTP ... ');
   const file = req.file;
   const fileName = file.originalname + '.jpg';
 
-  uploadToFTP(file.buffer, fileName, (err) => {
+  uploadToFTP(bufferToStream(file.buffer), fileName, (err) => {
     let response;
 
     if (err) {
@@ -23,24 +24,27 @@ const uploadFTP = async (req, res) => {
 };
 
 const uploadToFTP = async (fileContent, fileName, callback) => {
-  const ftpClient = new Ftp();
+  const ftpClient = new ftp.Client();
+
   try {
-    ftpClient.connect(configs.ftp);
-
-    ftpClient.on('ready', function () {
-      ftpClient.put(fileContent, configs.ftp.rootFolder + fileName, function (err, list) {
-        if (err) {
-          console.log(err);
-        }
-
-        console.log('Upload FTP success');
-        ftpClient.end();
-        callback(err);
-      });
-    });
-  } catch (error) {
-    console.log(error);
+    await ftpClient.access(configs.ftp);
+    await ftpClient.uploadFrom(fileContent, configs.ftp.rootFolder + fileName);
+  } catch (err) {
+    callback(err);
+    console.log(err);
   }
+  console.log('Uploading FTP Success ');
+  callback('');
+  ftpClient.close();
+};
+
+const bufferToStream = (binary) => {
+  return new Readable({
+    read() {
+      this.push(binary);
+      this.push(null);
+    },
+  });
 };
 
 module.exports = uploadFTP;
