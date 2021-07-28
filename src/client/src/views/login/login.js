@@ -47,6 +47,8 @@ export default {
         const serverSettings = JSON.parse(response.data.settings);
         uploadSettings.ftp.enabled = uploadSettings.ftp.enabled && serverSettings.ftp.enabled;
         uploadSettings.cloudinary.enabled = uploadSettings.cloudinary.enabled && serverSettings.cloudinary.enabled;
+        uploadSettings.local.enabledLow = uploadSettings.local.enabledLow && serverSettings.local.enabledLow;
+        uploadSettings.local.enabledHigh = uploadSettings.local.enabledHigh && serverSettings.local.enabledHigh;
         localStorage.setItem('uploadSettings', JSON.stringify(uploadSettings));
       }
     },

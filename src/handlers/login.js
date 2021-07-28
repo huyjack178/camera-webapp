@@ -34,7 +34,11 @@ const login = async (req, res, server) => {
       res.code(200).send({
         token,
         imageMaxSizes: JSON.stringify(configs.imageMaxSizes),
-        settings: JSON.stringify({ ftp: { enabled: !!configs.ftp.host }, cloudinary: { enabled: !!configs.cloudinary.cloud_name } }),
+        settings: JSON.stringify({
+          ftp: { enabled: !!configs.ftp.host },
+          cloudinary: { enabled: !!configs.cloudinary.cloud_name },
+          local: { enabledLow: !!configs.uploadDirectoryPath.low, enabledHigh: !!configs.uploadDirectoryPath.high },
+        }),
       });
     } else {
       res.code(400).send('Username hoặc password chưa đúng');

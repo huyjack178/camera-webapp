@@ -9,12 +9,10 @@ const uploadLocal = async (req, res) => {
   console.log('Uploading LOCAL ... ');
   const file = req.file;
   const date = req.body.fileDate;
-  const isHighResolution = req.body.isHighResolution && configs.uploadDirectoryPath.high != '';
-  console.log(isHighResolution);
   const fileName = file.originalname + '.jpg';
   let rootFolderPath;
 
-  if (isHighResolution == 'true') {
+  if (req.body.isHighResolution === 'true') {
     rootFolderPath = `${configs.uploadDirectoryPath.high}/${moment(date).format('YYYY')}`;
   } else {
     rootFolderPath = `${configs.uploadDirectoryPath.low}/${moment(date).format('YYYY')}_GIAM`;

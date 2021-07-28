@@ -28,7 +28,7 @@ const uploadToFTP = async (fileContent, fileName, callback) => {
     ftpClient.connect(configs.ftp);
 
     ftpClient.on('ready', function () {
-      ftpClient.put(fileContent, fileName, function (err, list) {
+      ftpClient.put(fileContent, configs.ftp.rootFolder + fileName, function (err, list) {
         if (err) {
           console.log(err);
         }
