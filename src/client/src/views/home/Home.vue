@@ -64,7 +64,7 @@
       <v-card>
         <v-card-title class="headline"> Cấu hình Upload </v-card-title>
         <v-expansion-panels>
-          <v-expansion-panel>
+          <v-expansion-panel v-show="serverSettings.local.enabledLow || serverSettings.local.enabledHigh">
             <v-expansion-panel-header> Upload Local </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-row justify="space-around" no-gutters>
