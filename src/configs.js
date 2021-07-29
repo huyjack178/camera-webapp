@@ -6,7 +6,7 @@ module.exports = {
   },
   uploadDirectoryPath: {
     low: '',
-    high: './upload-high-files',
+    high: '',
   },
   users: [
     {

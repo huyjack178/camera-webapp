@@ -9,6 +9,24 @@ export default {
   },
   data() {
     return {
+      uploadSettings: {
+        local: {
+          enabled: true,
+          ip: '',
+        },
+        ftp: {
+          enabled: false,
+          host: '',
+          username: '',
+          password: '',
+        },
+        cloudinary: {
+          enabled: false,
+          cloud_name: '',
+          api_key: '',
+          api_secret: '',
+        },
+      },
       username: '',
       password: '',
       showPassword: false,
@@ -42,12 +60,14 @@ export default {
     },
 
     adjustUploadSettings(response) {
+      localStorage.setItem('uploadSettings', JSON.stringify(this.uploadSettings));
+
       if (localStorage.getItem('uploadSettings')) {
         const uploadSettings = JSON.parse(localStorage.getItem('uploadSettings'));
         const serverSettings = JSON.parse(response.data.settings);
         uploadSettings.ftp.enabled = uploadSettings.ftp.enabled && serverSettings.ftp.enabled;
         uploadSettings.cloudinary.enabled = uploadSettings.cloudinary.enabled && serverSettings.cloudinary.enabled;
-        uploadSettings.local.enabled = serverSettings.local.enabledHigh && serverSettings.local.enabledLow;
+        uploadSettings.local.enabled = serverSettings.local.enabledHigh || serverSettings.local.enabledLow;
         localStorage.setItem('uploadSettings', JSON.stringify(uploadSettings));
       }
     },
