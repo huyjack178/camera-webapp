@@ -12,8 +12,8 @@ export default class UploadService {
     this.commonUploadService.upload('/uploadLocal', data, callback);
   };
 
-  uploadFTP = ({ file, fileId, fileName }, callback) => {
-    const data = this.commonUploadService.initFormData(file, fileId, fileName);
+  uploadFTP = ({ file, fileId, fileName, fileDate, userName }, callback) => {
+    const data = this.commonUploadService.initFormData(file, fileId, fileName, fileDate, userName);
 
     this.commonUploadService.upload('/uploadFTP', data, callback);
   };

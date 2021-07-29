@@ -95,7 +95,7 @@ export default {
         const fileId = imageFile.id;
 
         this.uploadLocal(imageFile, filesData, fileId, fileName, fileDate, this.userName);
-        this.uploadFTP(imageFile, filesData, fileId, fileName);
+        this.uploadFTP(imageFile, filesData, fileId, fileName, fileDate, this.userName);
         this.updateCloudinary(imageFile, filesData, fileId, fileName);
       });
 
@@ -157,10 +157,10 @@ export default {
       this.$forceUpdate();
     },
 
-    uploadFTP(imageFile, files, fileId, fileName) {
+    uploadFTP(imageFile, files, fileId, fileName, fileDate, userName) {
       if (this.uploadSettings.ftp.enabled) {
         imageFile.uploadingFtp = true;
-        uploadService.uploadFTP({ file: files.low, fileId, fileName }, response => {
+        uploadService.uploadFTP({ file: files.low, fileId, fileName, fileDate, userName }, response => {
           if (this.isUnauthorized(response)) {
             return;
           }

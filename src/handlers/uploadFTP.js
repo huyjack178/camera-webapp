@@ -1,14 +1,14 @@
 const configs = require('../configs');
 const ftp = require('basic-ftp');
-const mime = require('mime-types');
 const { Readable } = require('stream');
+const moment = require('moment');
 
 const uploadFTP = async (req, res) => {
   console.log('Uploading FTP ... ');
   const file = req.file;
   const fileName = file.originalname + '.jpg';
 
-  uploadToFTP(bufferToStream(file.buffer), fileName, (err) => {
+  uploadToFTP(bufferToStream(file.buffer), fileName, req, (err) => {
     let response;
 
     if (err) {
@@ -23,12 +23,15 @@ const uploadFTP = async (req, res) => {
   });
 };
 
-const uploadToFTP = async (fileContent, fileName, callback) => {
+const uploadToFTP = async (fileContent, fileName, req, callback) => {
   const ftpClient = new ftp.Client();
 
   try {
     await ftpClient.access(configs.ftp);
-    await ftpClient.uploadFrom(fileContent, configs.ftp.rootFolder + fileName);
+    const date = req.body.fileDate;
+    const folderPath = `${moment(date).format('YYYY')}/${moment(date).format('MM')}/${moment(date).format('YYYYMMDD')}/${req.body.userName}/${req.body.fileId}/`;
+    await ftpClient.ensureDir(configs.ftp.rootFolder + folderPath);
+    await ftpClient.uploadFrom(fileContent, configs.ftp.rootFolder + folderPath + fileName);
   } catch (err) {
     callback(err);
     console.log(err);
