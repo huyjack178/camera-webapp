@@ -15,13 +15,13 @@ export default {
           ip: '',
         },
         ftp: {
-          enabled: false,
+          enabled: true,
           host: '',
           username: '',
           password: '',
         },
         cloudinary: {
-          enabled: false,
+          enabled: true,
           cloud_name: '',
           api_key: '',
           api_secret: '',
