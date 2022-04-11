@@ -24,6 +24,7 @@ export default {
         },
       },
       serverSettings: {
+        local: {},
         ftp: {
           enabled: false,
         },

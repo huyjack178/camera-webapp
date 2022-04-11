@@ -5,8 +5,8 @@ module.exports = {
     low: 840,
   },
   uploadDirectoryPath: {
-    low: '',
-    high: '',
+    low: '/low',
+    high: '/high',
   },
   users: [
     {

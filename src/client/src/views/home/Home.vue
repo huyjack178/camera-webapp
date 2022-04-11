@@ -149,6 +149,12 @@
           Ghi
         </v-btn></v-col
       >
+       <v-col cols="12">
+        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="downloadToLocal">
+          <v-icon dark left>mdi-cloud-upload</v-icon>
+          Ghi vào local
+        </v-btn></v-col
+      >
       <v-col cols="12">
         <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="onShowingContainerImages">
           <v-icon dark left>mdi-file</v-icon>
