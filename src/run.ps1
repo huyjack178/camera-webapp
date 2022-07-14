@@ -78,4 +78,6 @@ npm install --global yarn
 pm2-startup install
 
 yarn install
-npm start
+pm2 start ./server.js --name server3001
+pm2 save
+pm2 resurrect

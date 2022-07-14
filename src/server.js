@@ -35,7 +35,7 @@ server.register(require('./jwt-auth')).after(() => {
   server.post('/login', (req, res) => loginHandler(req, res, server));
 });
 
-server.listen(3000, '0.0.0.0', (err, address) => {
+server.listen(3001, '0.0.0.0', (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
