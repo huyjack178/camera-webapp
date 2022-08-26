@@ -23,6 +23,10 @@ export default class UploadService {
 
     this.commonUploadService.upload('/uploadCloud', data, callback);
   };
+
+  listFtpUploadFileNames = (folderPath, callback) => {
+    this.commonUploadService.post('/ftpImages', { folderPath }, callback);
+  }
 }
 
 class CommonUploadService {
@@ -63,4 +67,23 @@ class CommonUploadService {
         }
       });
   };
+
+  post = (path, data, callback) => {
+    const serverUrl = configs.serverUrl;
+    const token = window.$cookies.get('token');
+    axios
+      .post(serverUrl + path, data, {
+        headers: {
+          accept: 'application/json',
+          'Accept-Language': 'en-US,en;q=0.8',
+          Authorization: 'Bearer ' + token,
+        },
+      })
+      .then(response => callback(response))
+      .catch(error => {
+        if (error.response) {
+          callback(error.response);
+        }
+      });
+  }
 }

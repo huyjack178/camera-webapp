@@ -119,7 +119,7 @@
       <v-card>
         <v-carousel height="auto" ref="carousel" v-model="imageCarouselId">
           <v-carousel-item height="100%" v-for="(image, i) in imageElements" :key="i">
-            <v-img contain :src="image.src" :lazy-src="image.src" class="image">
+            <v-img contain :src="image.element.src" :lazy-src="image.element.src" class="image">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
@@ -135,11 +135,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="showFtpUploadedImagesCarousel" id="image-viewer" persistent class="text-center">
+    <v-dialog v-model="showFtpUploadedImagesCarousel" id="ftp-image-viewer" persistent class="text-center">
       <v-card>
-        <v-carousel height="auto" ref="carousel" v-model="ftpImageCarouselId">
+        <v-progress-circular v-show='loadFtp' :width='10' :size='50' color='primary'
+                             indeterminate></v-progress-circular>
+        <v-carousel height="auto" ref="ftp-carousel" v-model="ftpImageCarouselId">
           <v-carousel-item height="100%" v-for="(image, i) in ftpUploadedImages" :key="i">
-            <v-img contain :src="image.src" :lazy-src="image.src" class="image">
+            <v-img contain :src="image.element.src" :lazy-src="image.element.src" class="image">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
@@ -149,9 +151,7 @@
           </v-carousel-item>
         </v-carousel>
         <v-card-actions>
-          <v-btn color='green darken-1' text @click='deleteImage'> Xoá</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color='green darken-1' text @click='showImagesCarousel = false'> Thoát</v-btn>
+          <v-btn color='green darken-1' text @click='showFtpUploadedImagesCarousel = false'> Thoát</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -199,6 +199,12 @@
         <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
           <v-icon dark left>mdi-camera</v-icon>
           Chụp
+        </v-btn>
+      </v-col>
+      <v-col cols="12">
+        <v-btn :disabled='!currentFtpPath' for="files" elevation="5" outlined rounded color="primary" v-on:click="onShowingFtpUploadedImages">
+          <v-icon dark left>mdi-file</v-icon>
+          Xem hình FTP
         </v-btn>
       </v-col>
     </v-row>

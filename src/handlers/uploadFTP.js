@@ -8,13 +8,13 @@ const uploadFTP = async (req, res) => {
   const file = req.file;
   const fileName = file.originalname + '.jpg';
 
-  uploadToFTP(bufferToStream(file.buffer), fileName, req, (err) => {
+  uploadToFTP(bufferToStream(file.buffer), fileName, req, (result) => {
     let response;
 
-    if (err) {
-      response = { error: err, success: false };
+    if (result.error) {
+      response = { error: result.error, success: false };
     } else {
-      response = { success: true, host: configs.ftp.host };
+      response = { success: true, host: configs.ftp.host, folderPath: result.folderPath };
     }
 
     res.code(200).send({
@@ -23,7 +23,7 @@ const uploadFTP = async (req, res) => {
   });
 };
 
-const uploadToFTP = async (fileContent, fileName, req, callback) => {
+const uploadToFTP = async (fileContent, fileName, req, onFinishedUpload) => {
   const ftpClient = new ftp.Client();
   let folderPath;
 
@@ -34,14 +34,14 @@ const uploadToFTP = async (fileContent, fileName, req, callback) => {
     await ftpClient.ensureDir(configs.ftp.rootFolder + folderPath);
     await ftpClient.uploadFrom(fileContent, configs.ftp.rootFolder + folderPath + fileName);
   } catch (err) {
-    callback(err);
+    onFinishedUpload({ error: err });
     console.log(err);
+    return;
   }
-  console.log('Uploading FTP Success ');
-  callback({
-    ftpFolder: configs.ftp.rootFolder + folderPath
-  });
+
   ftpClient.close();
+  onFinishedUpload({ folderPath: configs.ftp.rootFolder + folderPath });
+  console.log('Uploading FTP Success ');
 };
 
 const bufferToStream = (binary) => {

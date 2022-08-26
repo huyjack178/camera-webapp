@@ -9,24 +9,15 @@ const getImagesFromFtp = async (req, res) => {
   try {
     await ftpClient.access(configs.ftp);
     const fileInfos = await ftpClient.list(folderPath);
-    for (const file in fileInfos) {
-      let writeStream = fs.createWriteStream(file.name);
-
-      await ftpClient.downloadTo(writeStream, folderPath + file.name);
-      console.log(writeStream);
-    }
-
+    res.code(200).send(fileInfos.map(file => file.name));
+    console.log('Get FTP Success ');
+    ftpClient.close();
   } catch (err) {
     res.code(500).send({
       err,
     });
     console.log(err);
   }
-  console.log('Get FTP Success ');
-  ftpClient.close();
-
-  res.code(200).send({});
-  console.log(err);
-};
+}
 
 module.exports = getImagesFromFtp;

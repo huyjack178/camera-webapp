@@ -69,12 +69,13 @@ export default {
     onCapture() {
       this.showContainerButtons = true;
       const file = this.$refs.camera.files[0];
+      const name = `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${('0' + (this.imageFiles.length + 1)).slice(-2)}`;
 
       imageProcessor.processImage(
         file,
         this.imageMaxSizes,
         imageElement => {
-          this.imageElements.push(imageElement);
+          this.imageElements.push({ name, element: imageElement });
           this.imageCarouselId = this.imageElements.length - 1;
         },
         (lowImageFile, highImageFile) => {
@@ -82,7 +83,7 @@ export default {
             files: { low: lowImageFile, high: highImageFile },
             date: this.containerDate,
             id: this.containerId,
-            name: `${this.containerId}_${this.containerDate.format('YYMMDDHHmmss')}_${('0' + (this.imageFiles.length + 1)).slice(-2)}`,
+            name,
           });
         }
       );
@@ -181,6 +182,7 @@ export default {
             imageFile.uploadFtpSuccess = true;
             this.uploadFtpSuccessCount++;
             this.hideBackToHomePageButton = this.hideBackToHomePageButton && (this.uploadFtpSuccessCount < this.imageFiles.length);
+            this.currentFtpPath = result.ftp.folderPath;
           } else {
             imageFile.uploadFtpSuccess = false;
           }
@@ -242,6 +244,34 @@ export default {
       this.showImagesCarousel = true;
     },
 
+
+    onShowingFtpUploadedImages() {
+      this.loadFtp = true;
+      this.ftpUploadedImages = [];
+      this.showFtpUploadedImagesCarousel = true;
+
+      if (this.currentFtpPath) {
+        uploadService.listFtpUploadFileNames(this.currentFtpPath, response => {
+
+          this.imageElements.forEach(image => {
+            response.data.forEach(file => {
+              if (file.includes(image.name)){
+                this.ftpUploadedImages.push(image);
+              }
+            })
+          })
+
+          this.loadFtp = false;
+          if (this.ftpUploadedImages.length == 0) {
+            alert('Không có hình để xem');
+            return;
+          }
+
+          this.$forceUpdate();
+        });
+      }
+    },
+
     deleteImage() {
       this.imageFiles.splice(this.imageCarouselId, 1);
       this.imageElements.splice(this.imageCarouselId, 1);
@@ -261,6 +291,7 @@ export default {
       this.imageFiles = [];
       this.imageElements = [];
       this.containerDate = '';
+      this.currentFtpPath = '';
       this.uploadPopupTitle = 'Đang Upload ....';
     },
 
