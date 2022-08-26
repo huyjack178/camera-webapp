@@ -5,8 +5,8 @@ module.exports = {
     low: 840,
   },
   uploadDirectoryPath: {
-    low: '/low',
-    high: '/high',
+    low: './low',
+    high: './high',
   },
   users: [
     {
@@ -40,11 +40,11 @@ module.exports = {
     api_secret: '2gfT6Uar6u8in8Wky2a3D_6pC6s',
   },
   ftp: {
-    host: '203.128.242.134',
-    port: '5021',
-    user: 'test1',
-    rootFolder: '/SFTP_BAOGIA/',
-    password: 'Solog2021#',
+    host: 'ftp.dlptest.com',
+    port: '21',
+    user: 'dlpuser',
+    rootFolder: '/',
+    password: 'rNrKYTX9g7z3RgJRmxWuGHbeu',
   },
   // cloudinary: {
   //   cloud_name: '',

@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import jsZip, { file } from 'jszip';
+import jsZip from 'jszip';
 import moment from 'moment';
 import homeData from './data';
 import UploadService from './services/upload-service';
@@ -90,6 +90,11 @@ export default {
 
     upload() {
       this.showProgressDialog = true;
+      this.uploadLocalSuccessCount = 0;
+      this.uploadFtpSuccessCount = 0;
+      this.uploadCloudSuccessCount = 0;
+      this.hideBackToHomePageButton = true;
+
       this.imageFiles.forEach(imageFile => {
         const filesData = imageFile.files;
         const fileName = imageFile.name;
@@ -152,6 +157,8 @@ export default {
       if (result.local.success) {
         imageFile.localPath = result.local.path;
         imageFile.uploadLocalSuccess = true;
+        this.uploadLocalSuccessCount++;
+        this.hideBackToHomePageButton = this.hideBackToHomePageButton && (this.uploadLocalSuccessCount < this.imageFiles.length);
       } else {
         imageFile.uploadLocalSuccess = false;
       }
@@ -172,6 +179,8 @@ export default {
           if (result.ftp.success) {
             imageFile.ftpHost = result.ftp.host;
             imageFile.uploadFtpSuccess = true;
+            this.uploadFtpSuccessCount++;
+            this.hideBackToHomePageButton = this.hideBackToHomePageButton && (this.uploadFtpSuccessCount < this.imageFiles.length);
           } else {
             imageFile.uploadFtpSuccess = false;
           }
@@ -194,6 +203,8 @@ export default {
           if (result.cloud.success) {
             imageFile.cloudUrl = result.cloud.url;
             imageFile.uploadCloudSuccess = true;
+            this.uploadCloudSuccessCount++;
+            this.hideBackToHomePageButton = this.hideBackToHomePageButton && (this.uploadCloudSuccessCount < this.imageFiles.length);
           } else {
             imageFile.uploadCloudSuccess = false;
           }
@@ -240,8 +251,10 @@ export default {
       }
     },
 
-    backToHomePage() {
-      this.containerId = '';
+    backToHomePage(keepContainerId = false) {
+      if (!keepContainerId){
+        this.containerId = '';
+      }
       this.showProgressDialog = false;
       this.showImagesCarousel = false;
       this.showContainerButtons = false;

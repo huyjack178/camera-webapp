@@ -36,12 +36,19 @@ export default {
       containerDate: '',
       imageFiles: [],
       imageElements: [],
+      ftpUploadedImages: [],
       imageCarouselId: 0,
+      ftpImageCarouselId: 0,
       showImagesCarousel: false,
       showContainerButtons: false,
       showProgressDialog: false,
       showUploadSettingsDialog: false,
+      showFtpUploadedImagesCarousel: false,
       uploadPopupTitle: 'Đang Upload ....',
+      uploadLocalSuccessCount: 0,
+      uploadFtpSuccessCount: 0,
+      uploadCloudSuccessCount: 0,
+      hideBackToHomePageButton: true
     };
   },
 };

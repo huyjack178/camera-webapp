@@ -8,6 +8,7 @@ const uploadFtpHandler = require('./handlers/uploadFTP');
 const uploadCloudHandler = require('./handlers/uploadCloud');
 const uploadLocalHandler = require('./handlers/uploadLocal');
 const loginHandler = require('./handlers/login');
+const ftpHandler = require('./handlers/getFtp');
 const serialNumber = require('serial-number');
 
 server
@@ -31,6 +32,8 @@ server.register(require('./jwt-auth')).after(() => {
   server.get('/login', function (req, res) {
     res.sendFile('index.html');
   });
+
+  server.post('/ftpImages', (req, res) => ftpHandler(req, res));
 
   server.post('/login', (req, res) => loginHandler(req, res, server));
 });

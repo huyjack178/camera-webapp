@@ -53,6 +53,7 @@ const mkDirByPathSync = (targetDir, { isRelativeToScript = false } = {}) => {
 
   return targetDir.split(sep).reduce((parentDir, childDir) => {
     const curDir = path.resolve(baseDir, parentDir, childDir);
+    console.log(curDir)
     try {
       fs.mkdirSync(curDir, { recursive: true });
     } catch (err) {

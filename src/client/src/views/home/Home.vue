@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height class="text-center justify-center align-center">
     <v-app-bar app color="primary" dark>
-      <v-btn text v-on:click="backToHomePage" class="pa-1">
+      <v-btn text v-on:click="backToHomePage()" class="pa-1">
         <v-img class="mr-1" src="~@/assets/fbsoft.png" width="20" />
         Home
       </v-btn>
@@ -20,16 +20,26 @@
       <v-card>
         <v-card-title class="headline"> {{ uploadPopupTitle }} </v-card-title>
         <v-card-text>
+          <div v-show='uploadSettings.local.enabled'>
+            <label>LOCAL: {{ uploadLocalSuccessCount }}/{{ imageFiles.length }}</label>
+          </div>
+          <div v-show='uploadSettings.ftp.enabled'>
+            <label>FTP: {{ uploadFtpSuccessCount }}/{{ imageFiles.length }}</label>
+          </div>
+          <div v-show='uploadSettings.cloudinary.enabled'>
+            <label>CLOUD: {{ uploadCloudSuccessCount }}/{{ imageFiles.length }}</label>
+          </div>
           <ul>
-            <li v-for="item in imageFiles" :key="item.name" class="mt-3" style="list-style: none">
+            <li v-for='item in imageFiles' :key='item.name' class='mt-3' style='list-style: none'>
               <div>
                 <strong> {{ item.name }}&nbsp;</strong>
               </div>
-              <div v-show="uploadSettings.local.enabled">
+              <div v-show='uploadSettings.local.enabled'>
                 Local Server
-                <v-progress-circular v-show="item.uploadingLocal" :width="3" :size="20" color="primary" indeterminate></v-progress-circular>
-                <span v-show="!item.uploadingLocal && item.uploadLocalSuccess"> <v-icon small color="green darken-2"> mdi-check-circle </v-icon></span>
-                <span v-show="!item.uploadingLocal && !item.uploadLocalSuccess"> <v-icon small color="red darken-2"> mdi-error </v-icon></span>
+                <v-progress-circular v-show='item.uploadingLocal' :width='3' :size='20' color='primary'
+                                     indeterminate></v-progress-circular>
+                <span v-show='!item.uploadingLocal && item.uploadLocalSuccess'> <v-icon small color='green darken-2'> mdi-check-circle </v-icon></span>
+                <span v-show='!item.uploadingLocal && !item.uploadLocalSuccess'> <v-icon small color='red darken-2'> mdi-error </v-icon></span>
                 <!-- <div>
                   <strong>{{ item.localPath }}</strong>
                 </div> -->
@@ -54,9 +64,13 @@
           </ul>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="green darken-1" text @click="backToHomePage"> Chuyển về trang chủ </v-btn>
+          <v-btn :disabled='hideBackToHomePageButton' color='green darken-1' text @click='backToHomePage()'> Về trang
+            chủ
+          </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="showProgressDialog = false"> Thoát </v-btn>
+          <v-btn color='green darken-1' text @click='backToHomePage(true)'>Chụp Tiếp</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color='green darken-1' text @click='showProgressDialog = false'> Thoát</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -115,9 +129,29 @@
           </v-carousel-item>
         </v-carousel>
         <v-card-actions>
-          <v-btn color="green darken-1" text @click="deleteImage"> Xoá </v-btn>
+          <v-btn color='green darken-1' text @click='deleteImage'> Xoá</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="showImagesCarousel = false"> Thoát </v-btn>
+          <v-btn color='green darken-1' text @click='showImagesCarousel = false'> Thoát</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showFtpUploadedImagesCarousel" id="image-viewer" persistent class="text-center">
+      <v-card>
+        <v-carousel height="auto" ref="carousel" v-model="ftpImageCarouselId">
+          <v-carousel-item height="100%" v-for="(image, i) in ftpUploadedImages" :key="i">
+            <v-img contain :src="image.src" :lazy-src="image.src" class="image">
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </v-carousel-item>
+        </v-carousel>
+        <v-card-actions>
+          <v-btn color='green darken-1' text @click='deleteImage'> Xoá</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color='green darken-1' text @click='showImagesCarousel = false'> Thoát</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
