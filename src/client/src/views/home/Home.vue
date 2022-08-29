@@ -137,74 +137,90 @@
     </v-dialog>
     <v-dialog v-model="showFtpUploadedImagesCarousel" id="ftp-image-viewer" persistent class="text-center">
       <v-card>
-        <v-progress-circular v-show='loadFtp' :width='10' :size='50' color='primary'
-                             indeterminate></v-progress-circular>
-        <v-carousel height="auto" ref="ftp-carousel" v-model="ftpImageCarouselId">
-          <v-carousel-item height="100%" v-for="(image, i) in ftpUploadedImages" :key="i">
-            <v-img contain :src="image.element.src" :lazy-src="image.element.src" class="image">
+        <v-row
+            v-show='loadFtp'
+            justify='center'
+            style='padding: 32px'
+        >
+          <v-progress-circular :width='10' :size='50'
+                               color='primary'
+                               indeterminate></v-progress-circular>
+        </v-row>
+        <v-carousel height='auto' ref='ftp-carousel' v-model='ftpImageCarouselId'>
+          <v-carousel-item height='100%' v-for='(image, i) in ftpUploadedImages' :key='i'>
+            <v-img contain :src='image.element.src' :lazy-src='image.element.src' class='image'>
               <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                <v-row class='fill-height ma-0' align='center' justify='center'>
+                  <v-progress-circular indeterminate color='grey lighten-5'></v-progress-circular>
                 </v-row>
               </template>
             </v-img>
           </v-carousel-item>
         </v-carousel>
         <v-card-actions>
-          <v-btn color='green darken-1' text @click='showFtpUploadedImagesCarousel = false'> Thoát</v-btn>
+          <v-row
+              justify='end'
+              style='padding: 8px'
+          >
+            <v-btn color='green darken-1' text @click='showFtpUploadedImagesCarousel = false'> Thoát</v-btn>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-row v-show="!showImagesCarousel && !showContainerButtons" id="container-input">
       <v-col cols="12">
         <v-text-field
-          label="Container ID"
-          style="text-transform: uppercase"
-          oninput="this.value = this.value.toUpperCase()"
-          :rules="[rules.required, rules.equal]"
-          outlined
-          hide-details="auto"
-          v-model="containerId"
+            label='Container ID'
+            style='text-transform: uppercase'
+            oninput='this.value = this.value.toUpperCase()'
+            :rules='[rules.required, rules.equal]'
+            outlined
+            hide-details='auto'
+            v-model='containerId'
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="inputContainer">
+      <v-col cols='12'>
+        <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='inputContainer'>
           <v-icon dark left>mdi-camera</v-icon>
           Chụp
         </v-btn>
-        <input v-show="false" type="file" ref="camera" multiple="multiple" id="camera" accept="image/*" capture="camera" v-on:change="onCapture" />
+        <input v-show='false' type='file' ref='camera' multiple='multiple' id='camera' accept='image/*' capture='camera'
+               v-on:change='onCapture' />
       </v-col>
     </v-row>
-    <v-row v-show="showContainerButtons" id="buttons" class="ma-0">
-      <v-col sm="12" cols="12"> Đã chụp {{ imageElements.length }} ảnh</v-col>
-      <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="upload">
+    <v-row v-show='showContainerButtons' id='buttons' class='ma-0'>
+      <v-col sm='12' cols='12'> Đã chụp {{ imageElements.length }} ảnh</v-col>
+      <v-col cols='12'>
+        <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='upload'>
           <v-icon dark left>mdi-cloud-upload</v-icon>
           Ghi
-        </v-btn></v-col
+        </v-btn>
+      </v-col
       >
-       <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="downloadToLocal">
+      <v-col cols='12'>
+        <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='downloadToLocal'>
           <v-icon dark left>mdi-cloud-upload</v-icon>
           Ghi vào local
-        </v-btn></v-col
+        </v-btn>
+      </v-col
       >
-      <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="onShowingContainerImages">
+      <v-col cols='12'>
+        <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='onShowingContainerImages'>
           <v-icon dark left>mdi-file</v-icon>
           Xem
         </v-btn>
       </v-col>
-      <v-col cols="12">
-        <v-btn for="files" elevation="5" outlined rounded color="primary" v-on:click="showCamera">
-          <v-icon dark left>mdi-camera</v-icon>
-          Chụp
-        </v-btn>
-      </v-col>
-      <v-col cols="12">
-        <v-btn :disabled='!currentFtpPath' for="files" elevation="5" outlined rounded color="primary" v-on:click="onShowingFtpUploadedImages">
+      <v-col cols='12' v-show='uploadSettings.ftp.enabled'>
+        <v-btn :disabled='!currentFtpPath' for='files' elevation='5' outlined rounded color='primary'
+               v-on:click='onShowingFtpUploadedImages'>
           <v-icon dark left>mdi-file</v-icon>
           Xem hình FTP
+        </v-btn>
+      </v-col>
+      <v-col cols='12'>
+        <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='showCamera'>
+          <v-icon dark left>mdi-camera</v-icon>
+          Chụp
         </v-btn>
       </v-col>
     </v-row>
