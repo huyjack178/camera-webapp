@@ -193,34 +193,34 @@
       <v-col cols='12'>
         <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='upload'>
           <v-icon dark left>mdi-cloud-upload</v-icon>
-          Ghi
+          GHI
         </v-btn>
       </v-col
       >
       <v-col cols='12'>
         <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='downloadToLocal'>
           <v-icon dark left>mdi-cloud-upload</v-icon>
-          Ghi vào local
+          LOCAL
         </v-btn>
       </v-col
       >
       <v-col cols='12'>
         <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='onShowingContainerImages'>
           <v-icon dark left>mdi-file</v-icon>
-          Xem
+          XEM
         </v-btn>
       </v-col>
       <v-col cols='12' v-show='uploadSettings.ftp.enabled'>
         <v-btn :disabled='!currentFtpPath' for='files' elevation='5' outlined rounded color='primary'
                v-on:click='onShowingFtpUploadedImages'>
           <v-icon dark left>mdi-file</v-icon>
-          Xem hình FTP
+          XEM FTP
         </v-btn>
       </v-col>
       <v-col cols='12'>
         <v-btn for='files' elevation='5' outlined rounded color='primary' v-on:click='showCamera'>
           <v-icon dark left>mdi-camera</v-icon>
-          Chụp
+          CHỤP
         </v-btn>
       </v-col>
     </v-row>
