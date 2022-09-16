@@ -50,7 +50,10 @@ export default {
       uploadLocalSuccessCount: 0,
       uploadFtpSuccessCount: 0,
       uploadCloudSuccessCount: 0,
-      hideBackToHomePageButton: true
+      hideBackToHomePageButton: true,
+      showImageViewer: false,
+      imageViewerSrc: '',
+      imageViewerTitle: '',
     };
   },
 };

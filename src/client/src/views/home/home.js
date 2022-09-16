@@ -59,6 +59,13 @@ export default {
 
       if (!this.containerDate) {
         this.containerDate = moment();
+        uploadService.getFtpFolderPath({
+          fileDate: this.containerDate,
+          fileId: this.containerId,
+          userName: this.userName,
+        }, (response) => {
+          this.currentFtpPath = response.data;
+        });
       }
     },
 
@@ -87,6 +94,7 @@ export default {
           });
         }
       );
+
     },
 
     upload() {
@@ -182,7 +190,7 @@ export default {
             imageFile.uploadFtpSuccess = true;
             this.uploadFtpSuccessCount++;
             this.hideBackToHomePageButton = this.hideBackToHomePageButton && (this.uploadFtpSuccessCount < this.imageFiles.length);
-            this.currentFtpPath = result.ftp.folderPath;
+            // this.currentFtpPath = result.ftp.folderPath;
           } else {
             imageFile.uploadFtpSuccess = false;
           }
@@ -250,33 +258,34 @@ export default {
       this.ftpUploadedImages = [];
       this.showFtpUploadedImagesCarousel = true;
 
-      if (this.currentFtpPath) {
-        uploadService.listFtpUploadFileNames(this.currentFtpPath, response => {
+      uploadService.listFtpUploadFileNames(this.currentFtpPath, response => {
+        this.ftpUploadedImages = response.data;
+        this.loadFtp = false;
+        if (this.ftpUploadedImages.length == 0) {
+          alert('Không có hình để xem');
+          return;
+        }
 
-          this.imageElements.forEach(image => {
-            response.data.forEach(file => {
-              if (file.includes(image.name)){
-                this.ftpUploadedImages.push(image);
-              }
-            })
-          })
+        this.$forceUpdate();
+      });
+    },
 
-          this.loadFtp = false;
-          if (this.ftpUploadedImages.length == 0) {
-            alert('Không có hình để xem');
-            return;
-          }
-
-          this.$forceUpdate();
-        });
-      }
+    showImageViewerDialog(image) {
+      this.imageViewerSrc = '';
+      this.imageViewerTitle = image;
+      this.showImageViewer = true;
+      const filePath = this.currentFtpPath + '/' + image;
+      uploadService.downloadFtpFile({ filePath }, (response) => {
+        this.imageViewerSrc = response.data;
+        this.$forceUpdate();
+      });
     },
 
     deleteImage() {
       this.imageFiles.splice(this.imageCarouselId, 1);
       this.imageElements.splice(this.imageCarouselId, 1);
 
-      if (this.imageElements.length == 0) {
+      if (this.imageElements.length === 0) {
         this.showImagesCarousel = false;
       }
     },
@@ -335,5 +344,7 @@ export default {
 
       return result;
     },
+
+
   },
 };

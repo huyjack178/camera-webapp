@@ -1,5 +1,16 @@
 const ftp = require('basic-ftp');
 const configs = require('../configs');
+const moment = require('moment/moment');
+const fs = require('fs');
+const { Readable } = require('stream')
+
+const getFtpFolderPath = async (req, res) => {
+  const date = req.body.fileDate;
+  const fileId = req.body.fileId;
+  const userName = req.body.userName;
+  const folderPath = `${moment(date).format('YYYY')}/${moment(date).format('MM')}/${moment(date).format('YYYYMMDD')}/${userName}/${fileId}/`;
+  res.code(200).send(folderPath);
+};
 
 const getImagesFromFtp = async (req, res) => {
   const folderPath = req.body.folderPath;
@@ -20,4 +31,33 @@ const getImagesFromFtp = async (req, res) => {
   }
 }
 
-module.exports = getImagesFromFtp;
+const downloadFile = async (req, res) => {
+  const filePath = req.body.filePath;
+  const client = new ftp.Client();
+  const tempFile = 'temp.jpg'
+  try {
+    console.log(filePath)
+
+    await client.access(configs.ftp);
+    await client.downloadTo(tempFile, filePath);
+    const buffer = fs.readFileSync(tempFile) // sync just for DEMO
+    const myStream = new Readable({
+      read () {
+        this.push(buffer)
+        this.push(null)
+      }
+    })
+
+    res.send('data:image/jpeg;base64,'  + buffer.toString('base64'))
+  }
+  catch(err) {
+    console.log(err)
+    res.code(500).send({
+      err,
+    });
+  }
+  client.close()
+}
+
+
+module.exports = { getImagesFromFtp, getFtpFolderPath, downloadFile };

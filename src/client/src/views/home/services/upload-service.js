@@ -26,7 +26,15 @@ export default class UploadService {
 
   listFtpUploadFileNames = (folderPath, callback) => {
     this.commonUploadService.post('/ftpImages', { folderPath }, callback);
-  }
+  };
+
+  getFtpFolderPath = ({ fileDate, fileId, userName }, callback) => {
+    this.commonUploadService.post('/ftpPath', { fileDate, fileId, userName }, callback);
+  };
+
+  downloadFtpFile = ({ filePath }, callback) => {
+    this.commonUploadService.post('/ftpDownload', { filePath }, callback, 'arraybuffer');
+  };
 }
 
 class CommonUploadService {
@@ -68,22 +76,28 @@ class CommonUploadService {
       });
   };
 
-  post = (path, data, callback) => {
+  post = (path, data, callback, responseType) => {
     const serverUrl = configs.serverUrl;
     const token = window.$cookies.get('token');
+    const config = {
+      headers: {
+        accept: 'application/json',
+        'Accept-Language': 'en-US,en;q=0.8',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+
+    if (responseType) {
+      config.responseType = responseType;
+    }
+
     axios
-      .post(serverUrl + path, data, {
-        headers: {
-          accept: 'application/json',
-          'Accept-Language': 'en-US,en;q=0.8',
-          Authorization: 'Bearer ' + token,
-        },
-      })
+      .post(serverUrl + path, data)
       .then(response => callback(response))
       .catch(error => {
         if (error.response) {
           callback(error.response);
         }
       });
-  }
+  };
 }

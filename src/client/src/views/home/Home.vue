@@ -135,8 +135,22 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="showFtpUploadedImagesCarousel" id="ftp-image-viewer" persistent class="text-center">
+    <v-dialog fullscreen hide-overlay v-model='showFtpUploadedImagesCarousel' id='ftp-image-viewer' persistent
+              class='text-center'>
       <v-card>
+        <v-toolbar
+            dark
+            color='primary'
+        >
+          <v-btn
+              icon
+              dark
+              @click='showFtpUploadedImagesCarousel = false'
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>FTP Images</v-toolbar-title>
+        </v-toolbar>
         <v-row
             v-show='loadFtp'
             justify='center'
@@ -146,29 +160,46 @@
                                color='primary'
                                indeterminate></v-progress-circular>
         </v-row>
-        <v-carousel height='auto' ref='ftp-carousel' v-model='ftpImageCarouselId'>
-          <v-carousel-item height='100%' v-for='(image, i) in ftpUploadedImages' :key='i'>
-            <v-img contain :src='image.element.src' :lazy-src='image.element.src' class='image'>
-              <template v-slot:placeholder>
-                <v-row class='fill-height ma-0' align='center' justify='center'>
-                  <v-progress-circular indeterminate color='grey lighten-5'></v-progress-circular>
-                </v-row>
-              </template>
-            </v-img>
-          </v-carousel-item>
-        </v-carousel>
-        <v-card-actions>
-          <v-row
-              justify='end'
-              style='padding: 8px'
-          >
-            <v-btn color='green darken-1' text @click='showFtpUploadedImagesCarousel = false'> Thoát</v-btn>
-          </v-row>
-        </v-card-actions>
+        <ul>
+          <v-list dense>
+            <v-list-item
+                v-for='(image, i) in ftpUploadedImages'
+                :key='i'
+                @click='showImageViewerDialog(image)'
+            >
+              <v-list-item-content>
+                <v-list-item-title v-text='image'></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </ul>
       </v-card>
     </v-dialog>
-    <v-row v-show="!showImagesCarousel && !showContainerButtons" id="container-input">
-      <v-col cols="12">
+    <v-dialog fullscreen hide-overlay v-model='showImageViewer'>
+      <v-card>
+        <v-toolbar
+            dark
+            color='primary'
+        >
+          <v-btn
+              icon
+              dark
+              @click='showImageViewer = false'
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{imageViewerTitle}}</v-toolbar-title>
+        </v-toolbar>
+        <v-img
+            :lazy-src="imageViewerSrc"
+            max-height='100%'
+            max-width='100%'
+            :src="imageViewerSrc"
+        ></v-img>
+      </v-card>
+    </v-dialog>
+    <v-row v-show='!showImagesCarousel && !showContainerButtons' id='container-input'>
+      <v-col cols='12'>
         <v-text-field
             label='Container ID'
             style='text-transform: uppercase'
@@ -211,7 +242,7 @@
         </v-btn>
       </v-col>
       <v-col cols='12' v-show='uploadSettings.ftp.enabled'>
-        <v-btn :disabled='!currentFtpPath' for='files' elevation='5' outlined rounded color='primary'
+        <v-btn for='files' elevation='5' outlined rounded color='primary'
                v-on:click='onShowingFtpUploadedImages'>
           <v-icon dark left>mdi-file</v-icon>
           XEM FTP
