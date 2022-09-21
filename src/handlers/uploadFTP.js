@@ -30,7 +30,7 @@ const uploadToFTP = async (fileContent, fileName, req, onFinishedUpload) => {
   try {
     await ftpClient.access(configs.ftp);
     const date = req.body.fileDate;
-    folderPath = `/${moment(date).format('YYYY')}/${moment(date).format('MM')}/${moment(date).format('YYYYMMDD')}/${req.body.userName}/${req.body.fileId}/`;
+    folderPath = `/${moment(date).format('YYYY')}/${moment(date).format('MM')}/${moment(date).format('YYYYMMDD')}/${req.body.userName.toUpperCase()}/${req.body.fileId}/`;
     await ftpClient.ensureDir(configs.ftp.rootFolder + folderPath);
     await ftpClient.uploadFrom(fileContent, configs.ftp.rootFolder + folderPath + fileName);
   } catch (err) {
