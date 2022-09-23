@@ -58,15 +58,22 @@ export default {
       }
 
       if (!this.containerDate) {
-        this.containerDate = moment();
-        uploadService.getFtpFolderPath({
-          fileDate: this.containerDate,
-          fileId: this.containerId,
-          userName: this.userName,
-        }, (response) => {
-          this.currentFtpPath = response.data;
-        });
+        this.setCurrentFtpPath();
       }
+    },
+
+    setCurrentFtpPath(callback) {
+      this.containerDate = moment();
+      uploadService.getFtpFolderPath({
+        fileDate: this.containerDate,
+        fileId: this.containerId,
+        userName: this.userName,
+      }, (response) => {
+        this.currentFtpPath = response.data;
+        if (callback) {
+          callback();
+        }
+      });
     },
 
     showCamera() {
@@ -254,19 +261,21 @@ export default {
 
 
     onShowingFtpUploadedImages() {
-      this.loadFtp = true;
-      this.ftpUploadedImages = [];
-      this.showFtpUploadedImagesCarousel = true;
+      this.setCurrentFtpPath(() => {
+        this.loadFtp = true;
+        this.ftpUploadedImages = [];
+        this.showFtpUploadedImagesCarousel = true;
 
-      uploadService.listFtpUploadFileNames(this.currentFtpPath, response => {
-        this.ftpUploadedImages = response.data;
-        this.loadFtp = false;
-        if (this.ftpUploadedImages.length == 0) {
-          alert('Không có hình để xem');
-          return;
-        }
+        uploadService.listFtpUploadFileNames(this.currentFtpPath, response => {
+          this.ftpUploadedImages = response.data;
+          this.loadFtp = false;
+          if (this.ftpUploadedImages.length == 0) {
+            alert('Không có hình để xem');
+            return;
+          }
 
-        this.$forceUpdate();
+          this.$forceUpdate();
+        });
       });
     },
 

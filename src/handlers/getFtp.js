@@ -9,6 +9,7 @@ const getFtpFolderPath = async (req, res) => {
   const fileId = req.body.fileId;
   const userName = req.body.userName;
   const folderPath = `${configs.ftp.rootFolder}/${moment(date).format('YYYY')}/${moment(date).format('MM')}/${moment(date).format('YYYYMMDD')}/${userName.toUpperCase()}/${fileId}/`;
+  console.log(folderPath)
   res.code(200).send(folderPath);
 };
 

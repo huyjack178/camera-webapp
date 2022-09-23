@@ -217,6 +217,11 @@
         </v-btn>
         <input v-show='false' type='file' ref='camera' multiple='multiple' id='camera' accept='image/*' capture='camera'
                v-on:change='onCapture' />
+        <v-btn style='margin-left: 8px' for='files' elevation='5' outlined rounded color='primary'
+               v-on:click='onShowingFtpUploadedImages'>
+          <v-icon dark left>mdi-file</v-icon>
+          XEM FTP
+        </v-btn>
       </v-col>
     </v-row>
     <v-row v-show='showContainerButtons' id='buttons' class='ma-0'>
